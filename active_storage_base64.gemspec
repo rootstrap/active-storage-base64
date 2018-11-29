@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   ]
   s.require_paths = ['lib']
   s.authors = ['Nicolas Fabre, Ricky Ricoch']
+  s.license = 'MIT'
 
   #Dependencies
   s.add_dependency 'rails', '>= 5.2.0'
