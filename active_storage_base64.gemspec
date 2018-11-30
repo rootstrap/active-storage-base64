@@ -10,9 +10,11 @@ Gem::Specification.new do |s|
   s.authors = ['Nicolas Fabre, Ricky Ricoch']
   s.license = 'MIT'
 
-  #Dependencies
-  s.add_dependency 'rails', '>= 5.2.0'
+  # Dependencies
+  s.add_dependency 'rails', '~> 5.2.0'
 
-  #Development dependencies
-  s.add_development_dependency 'rubocop', '>= 0.49.1'
+  # Development dependencies
+  s.add_development_dependency 'rubocop', '~> 0.56.0 '
+  s.add_development_dependency 'reek', '~> 4.8.1'
+  s.add_development_dependency 'rspec-rails', '~> 3.8.0'
 end
