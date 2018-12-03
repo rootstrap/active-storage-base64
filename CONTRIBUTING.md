@@ -4,7 +4,7 @@ You can contribute to this repo if you have an issue, found a bug or think there
 
 If you want to contribute with code as well, please follow the next steps:
 
-1. Read, understand and agree to our [code of conduct](https://github.com/rootstrap/active-storage-base64/CODE_OF_CONDUCT.md)
+1. Read, understand and agree to our [code of conduct](https://github.com/rootstrap/active-storage-base64/blob/master/CODE_OF_CONDUCT.md)
 2. [Fork the repo](https://help.github.com/articles/about-forks/)
 3. Clone the project into your machine:
 `$ git clone git@github.com:[YOUR GITHUB USERNAME]/active-storage-base64.git`
