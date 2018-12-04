@@ -1,5 +1,5 @@
-require "active_support/concern"
-require "active_storage/attached"
+require 'active_support/concern'
+require 'active_storage/attached'
 
 module ActiveStorageSupport
   module SupportForBase64
@@ -11,7 +11,7 @@ module ActiveStorageSupport
         class_eval <<-CODE, __FILE__, __LINE__ + 1
           def #{name}
             @active_storage_attached_#{name} ||=
-              ActiveStorageSupport::Base64One.new("#{name}", self, dependent: #{dependent == :purge_later ? ":purge_later" : "false"})
+              ActiveStorageSupport::Base64One.new("#{name}", self, dependent: #{dependent == :purge_later ? ':purge_later' : 'false'})
           end
 
           def #{name}=(data)
@@ -26,7 +26,7 @@ module ActiveStorageSupport
         class_eval <<-CODE, __FILE__, __LINE__ + 1
           def #{name}
             @active_storage_attached_#{name} ||=
-              ActiveStorageSupport::Base64Many.new("#{name}", self, dependent: #{dependent == :purge_later ? ":purge_later" : "false"})
+              ActiveStorageSupport::Base64Many.new("#{name}", self, dependent: #{dependent == :purge_later ? ':purge_later' : 'false'})
           end
 
           def #{name}=(attachables)

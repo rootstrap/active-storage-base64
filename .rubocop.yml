@@ -3,7 +3,6 @@ Documentation:
 
 Layout/SpaceBeforeFirstArg:
   Exclude:
-    - app/views/api/**/**/*
 
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -20,7 +19,6 @@ Metrics/BlockLength:
   Exclude:
     - config/**/*
     - spec/**/*
-    - app/admin/**/*
 
 Metrics/BlockNesting:
   Max: 4
@@ -61,4 +59,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/ModuleFunction:
+  Enabled: false
+
+Naming/PredicateName:
   Enabled: false
