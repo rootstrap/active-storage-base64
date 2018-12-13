@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/rootstrap/active-storage-base64.svg?branch=master)](https://travis-ci.org/rootstrap/active-storage-base64)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0da0a0901cedd72aeb10/maintainability)](https://codeclimate.com/github/rootstrap/active-storage-base64/maintainability)
 
 # ActiveStorageBase64
