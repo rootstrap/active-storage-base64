@@ -13,10 +13,12 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.2.2"
 
   # Dependencies
-  s.add_dependency 'rails', '~> 5.2.0'
+  s.add_dependency 'rails', '~> 5.2.0', '<= 5.2.2'
 
   # Development dependencies
   s.add_development_dependency 'rubocop', '~> 0.56.0'
   s.add_development_dependency 'reek', '~> 4.8.1'
   s.add_development_dependency 'rspec-rails', '~> 3.8.0'
+  s.add_development_dependency 'sqlite3', '1.3.13'
+  s.add_development_dependency 'pry-rails', '~> 0.3.6'
 end
