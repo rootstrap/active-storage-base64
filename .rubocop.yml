@@ -29,7 +29,7 @@ Metrics/ClassLength:
 
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
-  Max: 6
+  Max: 7
 
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
@@ -47,6 +47,8 @@ Metrics/LineLength:
   URISchemes:
     - http
     - https
+  Exclude:
+    - spec/dummy/db/schema.rb
 
 Metrics/ParameterLists:
   Max: 5

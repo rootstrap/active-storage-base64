@@ -6,19 +6,9 @@ rvm:
   - 2.4.2
   - 2.5.0
   - ruby-head
-  - jruby-head
 
 sudo: false
 
 script:
   - bundle exec rake code_analysis
   - bundle exec rspec
-
-matrix:
-  rvm:
-    - 2.4.2
-    - 2.5.0
-    - ruby-head
-    - jruby-head
-  gemfile:
-    - gemfiles/RailsHeadGemfile
