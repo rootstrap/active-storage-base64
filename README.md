@@ -72,7 +72,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:avatar, :username, :email)
+    params.require(:user).permit(:avatar[data:], :username, :email)
   end
 end
 ```
@@ -105,6 +105,42 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:username, :email)
+  end
+end
+```
+
+## Specifying a filename or content_type
+
+If you are willing to add a specific filename to your attachment, or send in a specific content_type for your file, you can use `data:` to attach the base64 data and specify your `filename:`, `content_type:` and/or `identify:` hash keys.
+Check the following example:
+```ruby
+class UsersController < ApplicationController
+  def create
+    user = User.create(user_params)
+    user.avatar.attach(data: params[:avatar], filename: 'your_filename', content_type: 'content/type', identify: 'false')
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:username, :email)
+  end
+end
+```
+Or, in case you want to have the avatar attached as soon as the user is created you can do:
+```ruby
+class UsersController < ApplicationController
+  def create
+    user = User.create(user_params)
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:username, :email, avatar:[:data,
+                                                            :filename,
+                                                            :content_type,
+                                                            :identify])
   end
 end
 ```

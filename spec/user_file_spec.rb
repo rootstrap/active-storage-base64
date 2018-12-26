@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Attach file' do
+  let(:filename) { 'generic_avatar.jpeg' }
   let(:file) do
-    filename = 'generic_avatar.jpeg'
     {
       io: File.open(
         File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', filename))
@@ -26,6 +26,12 @@ RSpec.describe 'Attach file' do
 
           expect(user.avatar.attached?).to be
         end
+
+        it 'assigns the specified filename' do
+          user.avatar.attach(file)
+
+          expect(user.avatar.filename.to_s).to eq(filename)
+        end
       end
 
       context 'when "user.avatar=" is called' do
@@ -34,6 +40,12 @@ RSpec.describe 'Attach file' do
 
           expect(user.avatar.attached?).to be
         end
+
+        it 'assigns the specified filename' do
+          user.avatar = file
+
+          expect(user.avatar.filename.to_s).to eq(filename)
+        end
       end
 
       context 'when the avatar is sent as a hash parameter to the user' do
@@ -41,6 +53,12 @@ RSpec.describe 'Attach file' do
           user = User.create(avatar: file)
 
           expect(user.avatar.attached?).to be
+        end
+
+        it 'assigns the specified filename' do
+          user = User.create(avatar: file)
+
+          expect(user.avatar.filename.to_s).to eq(filename)
         end
       end
 
@@ -75,14 +93,13 @@ RSpec.describe 'Attach file' do
   end
 
   context 'when user uses pictures' do
+    let(:second_filename) { 'generic-logo.png' }
     let(:second_file) do
-      filename = 'generic-logo.png'
-
       {
         io: File.open(
-          File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', filename))
+          File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', second_filename))
         ),
-        filename: filename
+        filename: second_filename
       }
     end
     let(:pictures_attachments) { [file, second_file] }
@@ -99,20 +116,45 @@ RSpec.describe 'Attach file' do
 
             expect(user.pictures.attached?).to be
           end
+
+          it 'assigns the specified filename' do
+            user.pictures.attach(file)
+
+            expect(user.pictures.first.filename.to_s).to eq(filename)
+          end
         end
 
         context 'when it is called with more than one picture' do
-          it 'attaches an array of pictures to the user' do
-            user.pictures.attach(pictures_attachments)
+          context 'when called with an array' do
+            it 'attaches an array of pictures to the user' do
+              user.pictures.attach(pictures_attachments)
 
-            expect(user.pictures.count).to eq(2)
+              expect(user.pictures.count).to eq(2)
+            end
+
+            it 'assigns the specified filename' do
+              user.pictures.attach(pictures_attachments)
+
+              expect(user.pictures.first.filename).to eq(filename)
+              expect(user.pictures.second.filename).to eq(second_filename)
+            end
           end
 
-          it 'attaches multiple individual pictures to the user' do
-            user.pictures.attach(file)
-            user.pictures.attach(second_file)
+          context 'when called with multiple individual files' do
+            it 'attaches multiple individual pictures to the user' do
+              user.pictures.attach(file)
+              user.pictures.attach(second_file)
 
-            expect(user.pictures.count).to eq(2)
+              expect(user.pictures.count).to eq(2)
+            end
+
+            it 'assigns the specified filename' do
+              user.pictures.attach(file)
+              user.pictures.attach(second_file)
+
+              expect(user.pictures.first.filename).to eq(filename)
+              expect(user.pictures.second.filename).to eq(second_filename)
+            end
           end
         end
       end
@@ -124,20 +166,45 @@ RSpec.describe 'Attach file' do
 
             expect(user.pictures.attached?).to be
           end
+
+          it 'assigns the specified filename' do
+            user.pictures = file
+
+            expect(user.pictures.first.filename.to_s).to eq(filename)
+          end
         end
 
         context 'when it is called with more than one picture' do
-          it 'attaches an array of pictures to the user' do
-            user.pictures = pictures_attachments
+          context 'when called with an array' do
+            it 'attaches an array of pictures to the user' do
+              user.pictures = pictures_attachments
 
-            expect(user.pictures.count).to eq(2)
+              expect(user.pictures.count).to eq(2)
+            end
+
+            it 'assigns the specified filename' do
+              user.pictures = pictures_attachments
+
+              expect(user.pictures.first.filename).to eq(filename)
+              expect(user.pictures.second.filename).to eq(second_filename)
+            end
           end
 
-          it 'attaches multiple individual pictures to the user' do
-            user.pictures = file
-            user.pictures = second_file
+          context 'when called with muiltiple individual pictures' do
+            it 'attaches multiple individual pictures to the user' do
+              user.pictures = file
+              user.pictures = second_file
 
-            expect(user.pictures.count).to eq(2)
+              expect(user.pictures.count).to eq(2)
+            end
+
+            it 'assigns the specified filename' do
+              user.pictures = file
+              user.pictures = second_file
+
+              expect(user.pictures.first.filename).to eq(filename)
+              expect(user.pictures.second.filename).to eq(second_filename)
+            end
           end
         end
       end
@@ -149,6 +216,12 @@ RSpec.describe 'Attach file' do
 
             expect(user.pictures.attached?).to be
           end
+
+          it 'assigns the specified filename' do
+            user = User.create(pictures: file)
+
+            expect(user.pictures.first.filename).to eq(filename)
+          end
         end
 
         context 'when an array of pictures is passed' do
@@ -156,6 +229,13 @@ RSpec.describe 'Attach file' do
             user = User.create(pictures: pictures_attachments)
 
             expect(user.pictures.count).to eq(2)
+          end
+
+          it 'assigns the specified filename' do
+            user = User.create(pictures: pictures_attachments)
+
+            expect(user.pictures.first.filename).to eq(filename)
+            expect(user.pictures.second.filename).to eq(second_filename)
           end
         end
       end
