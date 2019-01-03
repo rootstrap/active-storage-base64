@@ -151,9 +151,9 @@ For more information on how to work with ActiveStorage, please check the [Active
 
 Please read our [CONTRIBUTING](https://github.com/rootstrap/active-storage-base64/blob/master/CONTRIBUTING.md) and our [CODE_OF_CONDUCT](https://github.com/rootstrap/active-storage-base64/blob/master/CODE_OF_CONDUCT.md) files for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Authors
+## Author
 
-*Ricardo Cortio, Nicolás Fabre*
+*Ricardo Cortio*
 
 ## License
 
