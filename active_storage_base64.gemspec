@@ -1,13 +1,14 @@
 Gem::Specification.new do |s|
   s.name = 'active_storage_base64'
-  s.version = '0.0.0'
+  s.version = '0.1.0'
   s.date = '2018-11-07'
   s.summary = 'base64 support for ActiveStorage'
+
   s.files = [
     'lib/active_storage_base64.rb'
   ]
   s.require_paths = ['lib']
-  s.authors = ['Nicolas Fabre, Ricky Ricoch']
+  s.authors = ['Nicolas Fabre, Ricardo Cortio']
   s.license = 'MIT'
 
   s.required_ruby_version = ">= 2.2.2"

@@ -3,14 +3,18 @@ module ActiveStorageSupport
   module Base64Attach
     module_function
 
-    def attachment_from_base64(data:, filename: Time.current.to_i.to_s)
-      return data unless data.is_a?(String) && data.strip.start_with?('data')
+    def attachment_from_data(attachment)
+      if attachment.is_a?(Hash)
+        base64_data = attachment.delete(:data)
+        if base64_data.try(:is_a?, String) && base64_data =~ /^data:(.*?);(.*?),(.*)$/
 
-      base64_image = data.sub(/^data:.*,/, '')
-      decoded_image = Base64.decode64(base64_image)
-      image_io = StringIO.new(decoded_image)
+          attachment[:io] = StringIO.new(Base64.decode64(Regexp.last_match(3)))
+          attachment[:content_type] = Regexp.last_match(1) unless attachment[:content_type]
+          attachment[:filename] = Time.current.to_i.to_s unless attachment[:filename]
+        end
+      end
 
-      { io: image_io, filename: filename }
+      attachment
     end
   end
 end
