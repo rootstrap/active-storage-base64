@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'active_storage_base64'
-  s.version = '0.1.1'
+  s.version = '0.1.2'
   s.summary = 'Base64 support for ActiveStorage'
   s.description = s.summary
 
