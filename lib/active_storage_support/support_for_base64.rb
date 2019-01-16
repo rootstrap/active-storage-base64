@@ -8,29 +8,24 @@ module ActiveStorageSupport
       def has_one_base64_attached(name, dependent: :purge_later)
         has_one_attached name, dependent: dependent
 
-        class_eval <<-CODE, __FILE__, __LINE__ + 1
-          def #{name}
-            @active_storage_attached_#{name} ||=
-              ActiveStorageSupport::Base64One.new("#{name}", self, dependent: #{dependent == :purge_later ? ':purge_later' : 'false'})
-          end
-
-          def #{name}=(data)
-            #{name}.attach(data)
-          end
-        CODE
+        add_helper_method(ActiveStorageSupport::Base64One, name, dependent: dependent)
       end
 
       def has_many_base64_attached(name, dependent: :purge_later)
         has_many_attached name, dependent: dependent
 
+        add_helper_method(ActiveStorageSupport::Base64Many, name, dependent: dependent)
+      end
+
+      def add_helper_method(type, name, dependent:)
         class_eval <<-CODE, __FILE__, __LINE__ + 1
           def #{name}
             @active_storage_attached_#{name} ||=
-              ActiveStorageSupport::Base64Many.new("#{name}", self, dependent: #{dependent == :purge_later ? ':purge_later' : 'false'})
+              #{type}.new("#{name}", self, dependent: #{dependent == :purge_later ? ':purge_later' : 'false'})
           end
 
-          def #{name}=(attachables)
-            #{name}.attach(attachables)
+          def #{name}=(data)
+            #{name}.attach(data)
           end
         CODE
       end

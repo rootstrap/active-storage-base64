@@ -2,6 +2,9 @@ ENV['RAILS_ENV'] ||= 'test'
 require_relative 'dummy/config/environment.rb'
 require 'pry'
 
+require 'simplecov'
+SimpleCov.start
+
 Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 
 require 'tmpdir'

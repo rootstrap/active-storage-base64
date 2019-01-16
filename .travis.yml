@@ -12,6 +12,18 @@ rvm:
 
 sudo: false
 
+env:
+  global:
+    - CC_TEST_REPORTER_ID=7196b4aa257fde33f24463218af32db6a6efd23d9148204822f757fa614a093e
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
 script:
   - bundle exec rake code_analysis
   - bundle exec rspec
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
