@@ -10,7 +10,7 @@ Gem used to add support for base64 images for Rails's ActiveStorage.
 
 In order to get the gem working on your project you just need to add the gem to your project like this:
 ```ruby
-gem 'active-storage-base64'
+gem 'active_storage_base64'
 ```
 
 ### Prerequisites
