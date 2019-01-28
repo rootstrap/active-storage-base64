@@ -132,3 +132,10 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 Special thanks to the people who helped with guidance and ensuring code quality in this project:
 *Santiago Bartesaghi, Santiago Vidal and Matias Mansilla.*
+
+## Credits
+
+Active Storage Base64 is maintained by [Rootstrap](http://www.rootstrap.com) with the help of our
+[contributors](https://github.com/rootstrap/active-storage-base64/contributors).
+
+[<img src="https://s3-us-west-1.amazonaws.com/rootstrap.com/img/rs.png" width="100"/>](http://www.rootstrap.com)
