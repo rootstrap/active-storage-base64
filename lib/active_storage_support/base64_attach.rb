@@ -10,11 +10,19 @@ module ActiveStorageSupport
     end
 
     def fill_attachment_data(attachment, base64_data)
-      return unless base64_data.try(:is_a?, String) && base64_data =~ /^data:(.*?);(.*?),(.*)$/
+      return unless base64_data.try(:is_a?, String) && base64_data.strip.start_with?('data')
 
-      attachment[:io] = StringIO.new(Base64.decode64(Regexp.last_match(3)))
-      attachment[:content_type] ||= Regexp.last_match(1)
+      headers, data = base64_data.split(',')
+      decoded_data  = Base64.decode64(data)
+
+      attachment[:io] = StringIO.new(decoded_data)
+      attachment[:content_type] ||= content_type(headers)
       attachment[:filename]     ||= Time.current.to_i.to_s
+    end
+
+    def content_type(headers)
+      headers =~ /^data:(.*?)$/
+      Regexp.last_match(1).split(';base64').first
     end
   end
 end

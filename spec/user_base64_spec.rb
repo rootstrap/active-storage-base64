@@ -1,31 +1,24 @@
 require 'spec_helper'
 
 RSpec.describe 'Attach base64' do
-  let(:base64_data) do
-    {
-      data: File.read(
-        File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', 'generic_avatar_base64'))
-      ).strip
-    }
+  let(:filename) { 'generic_avatar.jpeg' }
+  let(:file) do
+    File.open(File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', filename))).read
   end
 
-  let(:second_base64_data) do
-    {
-      data: File.read(
-        File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', 'generic-logo_base64'))
-      ).strip
-    }
+  let(:second_filename) { 'generic-logo.png' }
+  let(:second_file) do
+    File.open(File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', second_filename))).read
   end
+
+  let(:base64_data)        { { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" } }
+  let(:second_base64_data) { { data: "data:image/png;base64,#{Base64.encode64(second_file)}" } }
+
+  let(:data_with_filename)        { base64_data.merge(filename: filename) }
+  let(:second_data_with_filename) { second_base64_data.merge(filename: second_filename) }
 
   let!(:rails_url) { Rails.application.routes.url_helpers }
-
   let(:user)       { User.create }
-
-  let(:filename)   { 'test_filename' }
-  let(:data_with_filename) { base64_data.merge(filename: filename) }
-
-  let(:second_filename) { 'second_test_filename' }
-  let(:second_data_with_filename) { second_base64_data.merge(filename: second_filename) }
 
   context 'when user uses an avatar' do
     context 'when user does not have an avatar attached yet' do
@@ -39,6 +32,14 @@ RSpec.describe 'Attach base64' do
             user.avatar.attach(base64_data)
 
             expect(user.avatar.attached?).to be
+          end
+
+          it 'attached file matches attachment file' do
+            user.avatar.attach(base64_data)
+
+            expect(
+              File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
+            ).to match(file)
           end
         end
 
@@ -58,6 +59,14 @@ RSpec.describe 'Attach base64' do
 
             expect(user.avatar.attached?).to be
           end
+
+          it 'attached file matches attachment file' do
+            user.avatar = base64_data
+
+            expect(
+              File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
+            ).to match(file)
+          end
         end
 
         context 'when filename is specified along with data' do
@@ -75,6 +84,14 @@ RSpec.describe 'Attach base64' do
             user = User.create(avatar: base64_data)
 
             expect(user.avatar.attached?).to be
+          end
+
+          it 'attached file matches attachment file' do
+            user = User.create(avatar: base64_data)
+
+            expect(
+              File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
+            ).to match(file)
           end
         end
 
@@ -134,6 +151,14 @@ RSpec.describe 'Attach base64' do
 
               expect(user.pictures.attached?).to be
             end
+
+            it 'attached file matches attachment file' do
+              user.pictures.attach(base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.first.key)).read
+              ).to match(file)
+            end
           end
 
           context 'when a filename is specified along with data' do
@@ -151,6 +176,14 @@ RSpec.describe 'Attach base64' do
               user.pictures.attach(pictures_attachments)
 
               expect(user.pictures.count).to eq(2)
+            end
+
+            it 'attached file matches attachment file' do
+              user.pictures.attach(pictures_attachments)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
+              ).to match(second_file)
             end
 
             it 'attaches multiple individual pictures to the user' do
@@ -188,6 +221,14 @@ RSpec.describe 'Attach base64' do
 
               expect(user.pictures.attached?).to be
             end
+
+            it 'attached file matches attachment file' do
+              user.pictures = base64_data
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
+              ).to match(file)
+            end
           end
 
           context 'when filename is specified' do
@@ -205,6 +246,14 @@ RSpec.describe 'Attach base64' do
               user.pictures = pictures_attachments
 
               expect(user.pictures.count).to eq(2)
+            end
+
+            it 'attached file matches attachment file' do
+              user.pictures = pictures_attachments
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
+              ).to match(second_file)
             end
 
             it 'attaches multiple individual pictures to the user' do
@@ -241,6 +290,14 @@ RSpec.describe 'Attach base64' do
               user = User.create(pictures: base64_data)
 
               expect(user.pictures.attached?).to be
+            end
+
+            it 'attached file matches attachment file' do
+              user = User.create(pictures: base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
+              ).to match(file)
             end
           end
 
