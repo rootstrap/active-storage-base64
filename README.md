@@ -68,7 +68,22 @@ on your controller you could do something like this:
 class UsersController < ApplicationController
   def create
     user = User.create(user_params)
-    user.avatar.attach(data: params[:avatar])
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(avatar: [:data], :username, :email)
+  end
+end
+```
+
+Or you could also do:
+```ruby
+class UsersController < ApplicationController
+  def create
+    user = User.create(user_params)
+    user.avatar.attach(params[:avatar])
   end
 
   private
@@ -110,6 +125,24 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:username, :email)
+  end
+end
+```
+
+Or, in case you want to have the avatar attached as soon as the user is created you can do:
+```ruby
+class UsersController < ApplicationController
+  def create
+    user = User.create(user_params)
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:username, :email, avatar: [:data,
+                                                             :filename,
+                                                             :content_type,
+                                                             :identify])
   end
 end
 ```
