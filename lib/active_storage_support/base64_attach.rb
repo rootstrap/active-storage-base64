@@ -4,7 +4,10 @@ module ActiveStorageSupport
     module_function
 
     def attachment_from_data(attachment)
-      fill_attachment_data(attachment, attachment.delete(:data)) if attachment.is_a?(Hash)
+      if attachment.is_a?(Hash)
+        attachment = attachment.symbolize_keys
+        fill_attachment_data(attachment, attachment.delete(:data))
+      end
 
       attachment
     end
