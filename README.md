@@ -96,6 +96,7 @@ class UsersController < ApplicationController
   def create
     user = User.create(user_params)
     user.avatar = { data: params[:avatar] }
+    user.save
   end
 
   private

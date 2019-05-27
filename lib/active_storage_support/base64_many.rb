@@ -1,12 +1,14 @@
 module ActiveStorageSupport
   class Base64Many < ActiveStorage::Attached::Many
     def attach(*attachables)
-      super base64_attachments(attachables)
+      super self.class.from_base64(attachables)
     end
 
-    def base64_attachments(attachments)
-      attachments.flatten.map do |attachment|
-        ActiveStorageSupport::Base64Attach.attachment_from_data(attachment)
+    def self.from_base64(attachables)
+      attachables = [attachables] unless attachables.is_a?(Array)
+
+      attachables.flatten.map do |attachable|
+        ActiveStorageSupport::Base64Attach.attachment_from_data(attachable)
       end
     end
   end

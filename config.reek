@@ -9,10 +9,8 @@ ClassVariable:
   exclude: []
 ControlParameter:
   enabled: true
-  exclude: ['ActiveStorageSupport::SupportForBase64#add_helper_method']
 DataClump:
   enabled: true
-  exclude: ['ActiveStorageSupport::SupportForBase64']
   max_copies: 2
   min_clump_size: 2
 DuplicateMethodCall:
