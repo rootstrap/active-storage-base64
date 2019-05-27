@@ -19,6 +19,8 @@ Metrics/BlockLength:
   Exclude:
     - config/**/*
     - spec/**/*
+  ExcludedMethods:
+    - class_methods
 
 Metrics/BlockNesting:
   Max: 4
