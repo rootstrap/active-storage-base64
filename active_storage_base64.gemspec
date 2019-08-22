@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.2.2'
 
   # Dependencies
-  s.add_dependency 'rails', '6.0.0.rc1'
+  s.add_dependency 'rails', '~> 6.0'
 
   # Development dependencies
   s.add_development_dependency 'pry-rails', '~> 0.3.6'
