@@ -367,6 +367,40 @@ RSpec.describe 'Attach base64' do
               expect(first_url).not_to eq(second_url)
             end
           end
+
+          context 'when replacing on assign' do
+            before do
+              @previous = ActiveStorage.replace_on_assign_to_many
+              ActiveStorage.replace_on_assign_to_many = true
+            end
+
+            after do
+              ActiveStorage.replace_on_assign_to_many = @previous
+            end
+
+            it 'updates the existing record replacing attachments' do
+              user.pictures = pictures_attachments
+              user.save
+              expect(user.pictures.count).to eq(2)
+            end
+          end
+
+          context 'when appending on assign' do
+            before do
+              @previous = ActiveStorage.replace_on_assign_to_many
+              ActiveStorage.replace_on_assign_to_many = false
+            end
+
+            after do
+              ActiveStorage.replace_on_assign_to_many = @previous
+            end
+
+            it 'updates the existing record appending the new attachments' do
+              user.pictures = pictures_attachments
+              user.save
+              expect(user.pictures.count).to eq(4)
+            end
+          end
         end
       end
     end

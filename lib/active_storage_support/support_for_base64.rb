@@ -33,14 +33,23 @@ module ActiveStorageSupport
             @active_storage_attached_#{name} ||= ActiveStorageSupport::Base64Many.new("#{name}", self)
           end
           def #{name}=(attachables)
-            attachment_changes["#{name}"] =
-              if attachables.nil? || Array(attachables).none?
-                ActiveStorage::Attached::Changes::DeleteMany.new("#{name}", self)
-              else
-                ActiveStorage::Attached::Changes::CreateMany.new(
-                  "#{name}", self, ActiveStorageSupport::Base64Many.from_base64(attachables)
-                )
+            if ActiveStorage.replace_on_assign_to_many
+              attachment_changes["#{name}"] =
+                if Array(attachables).none?
+                  ActiveStorage::Attached::Changes::DeleteMany.new("#{name}", self)
+                else
+                  ActiveStorage::Attached::Changes::CreateMany.new(
+                    "#{name}", self, ActiveStorageSupport::Base64Many.from_base64(attachables)
+                  )
+                end
+            else
+              if Array(attachables).any?
+                attachment_changes["#{name}"] =
+                  ActiveStorage::Attached::Changes::CreateMany.new(
+                    "#{name}", self, #{name}.blobs + ActiveStorageSupport::Base64Many.from_base64(attachables)
+                  )
               end
+            end
           end
         CODE
       end
