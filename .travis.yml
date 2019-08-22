@@ -8,6 +8,10 @@ rvm:
   - 2.6.0
   - ruby-head
 
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+
 sudo: false
 
 env:
