@@ -37,12 +37,14 @@ RSpec.describe 'Attach file' do
       context 'when "user.avatar=" is called' do
         it 'attaches an avatar to the user' do
           user.avatar = file
+          user.save
 
           expect(user.avatar.attached?).to be
         end
 
         it 'assigns the specified filename' do
           user.avatar = file
+          user.save
 
           expect(user.avatar.filename.to_s).to eq(filename)
         end
@@ -163,12 +165,14 @@ RSpec.describe 'Attach file' do
         context 'when it is called with only one picture' do
           it 'attaches a picture to the user' do
             user.pictures = file
+            user.save
 
             expect(user.pictures.attached?).to be
           end
 
           it 'assigns the specified filename' do
             user.pictures = file
+            user.save
 
             expect(user.pictures.first.filename.to_s).to eq(filename)
           end
@@ -178,12 +182,14 @@ RSpec.describe 'Attach file' do
           context 'when called with an array' do
             it 'attaches an array of pictures to the user' do
               user.pictures = pictures_attachments
+              user.save
 
               expect(user.pictures.count).to eq(2)
             end
 
             it 'assigns the specified filename' do
               user.pictures = pictures_attachments
+              user.save
 
               expect(user.pictures.first.filename).to eq(filename)
               expect(user.pictures.second.filename).to eq(second_filename)
@@ -192,15 +198,15 @@ RSpec.describe 'Attach file' do
 
           context 'when called with muiltiple individual pictures' do
             it 'attaches multiple individual pictures to the user' do
-              user.pictures = file
-              user.pictures = second_file
+              user.pictures = [file, second_file]
+              user.save
 
               expect(user.pictures.count).to eq(2)
             end
 
             it 'assigns the specified filename' do
-              user.pictures = file
-              user.pictures = second_file
+              user.pictures = [file, second_file]
+              user.save
 
               expect(user.pictures.first.filename).to eq(filename)
               expect(user.pictures.second.filename).to eq(second_filename)

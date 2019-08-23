@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'active_storage_base64'
-  s.version = '0.1.4'
+  s.version = '1.0.0'
   s.summary = 'Base64 support for ActiveStorage'
   s.description = s.summary
 
@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.2.2'
 
   # Dependencies
-  s.add_dependency 'rails', '~> 5.2'
+  s.add_dependency 'rails', '~> 6.0'
 
   # Development dependencies
   s.add_development_dependency 'pry-rails', '~> 0.3.6'
@@ -25,5 +25,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails', '~> 3.8.0'
   s.add_development_dependency 'rubocop', '~> 0.56.0'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'sqlite3', '1.3.13'
+  s.add_development_dependency 'sqlite3', '1.4.1'
 end

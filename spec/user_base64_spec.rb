@@ -56,12 +56,14 @@ RSpec.describe 'Attach base64' do
         context 'when only data is specified' do
           it 'attaches an avatar to the user' do
             user.avatar = base64_data
+            user.save
 
             expect(user.avatar.attached?).to be
           end
 
           it 'attached file matches attachment file' do
             user.avatar = base64_data
+            user.save
 
             expect(
               File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
@@ -72,6 +74,7 @@ RSpec.describe 'Attach base64' do
         context 'when filename is specified along with data' do
           it 'assigns the specified filename' do
             user.avatar = data_with_filename
+            user.save
 
             expect(user.avatar.filename.to_s).to eq(filename)
           end
@@ -218,12 +221,14 @@ RSpec.describe 'Attach base64' do
           context 'when only data is specified' do
             it 'attaches a picture to the user' do
               user.pictures = base64_data
+              user.save
 
               expect(user.pictures.attached?).to be
             end
 
             it 'attached file matches attachment file' do
               user.pictures = base64_data
+              user.save
 
               expect(
                 File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
@@ -234,6 +239,7 @@ RSpec.describe 'Attach base64' do
           context 'when filename is specified' do
             it 'assigns the specified filename' do
               user.pictures = data_with_filename
+              user.save
 
               expect(user.pictures.first.filename.to_s).to eq(filename)
             end
@@ -244,12 +250,14 @@ RSpec.describe 'Attach base64' do
           context 'when only data is specified' do
             it 'attaches an array of pictures to the user' do
               user.pictures = pictures_attachments
+              user.save
 
               expect(user.pictures.count).to eq(2)
             end
 
             it 'attached file matches attachment file' do
               user.pictures = pictures_attachments
+              user.save
 
               expect(
                 File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
@@ -257,8 +265,8 @@ RSpec.describe 'Attach base64' do
             end
 
             it 'attaches multiple individual pictures to the user' do
-              user.pictures = base64_data
-              user.pictures = second_base64_data
+              user.pictures = [base64_data, second_base64_data]
+              user.save
 
               expect(user.pictures.count).to eq(2)
             end
@@ -267,14 +275,15 @@ RSpec.describe 'Attach base64' do
           context 'when pictures have a specified filename' do
             it 'assigns the specified filename for the array of pictures' do
               user.pictures = attachments_with_filename
+              user.save
 
               expect(user.pictures.first.filename.to_s).to eq(filename)
               expect(user.pictures.second.filename.to_s).to eq(second_filename)
             end
 
             it 'assigns the specified filename for each individual picture' do
-              user.pictures = data_with_filename
-              user.pictures = second_data_with_filename
+              user.pictures = [data_with_filename, second_data_with_filename]
+              user.save
 
               expect(user.pictures.first.filename.to_s).to eq(filename)
               expect(user.pictures.second.filename.to_s).to eq(second_filename)
@@ -356,6 +365,40 @@ RSpec.describe 'Attach base64' do
               second_url = rails_url.rails_blob_url(user.pictures.second, disposition: 'attachment')
 
               expect(first_url).not_to eq(second_url)
+            end
+          end
+
+          context 'when replacing on assign' do
+            before do
+              @previous = ActiveStorage.replace_on_assign_to_many
+              ActiveStorage.replace_on_assign_to_many = true
+            end
+
+            after do
+              ActiveStorage.replace_on_assign_to_many = @previous
+            end
+
+            it 'updates the existing record replacing attachments' do
+              user.pictures = pictures_attachments
+              user.save
+              expect(user.pictures.count).to eq(2)
+            end
+          end
+
+          context 'when appending on assign' do
+            before do
+              @previous = ActiveStorage.replace_on_assign_to_many
+              ActiveStorage.replace_on_assign_to_many = false
+            end
+
+            after do
+              ActiveStorage.replace_on_assign_to_many = @previous
+            end
+
+            it 'updates the existing record appending the new attachments' do
+              user.pictures = pictures_attachments
+              user.save
+              expect(user.pictures.count).to eq(4)
             end
           end
         end
