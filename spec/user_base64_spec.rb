@@ -27,82 +27,193 @@ RSpec.describe 'Attach base64' do
       end
 
       context 'when "user.avatar.attach" is called' do
-        context 'when only data is specified' do
-          it 'attaches an avatar to the user' do
-            user.avatar.attach(base64_data)
+        context 'when comes in the form of a Hash' do
+          let(:base64_data) { { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" } }
 
-            expect(user.avatar.attached?).to be
+          context 'when only data is specified' do
+            it 'attaches an avatar to the user' do
+              user.avatar.attach(base64_data)
+
+              expect(user.avatar.attached?).to be
+            end
+
+            it 'matches the attachment file' do
+              user.avatar.attach(base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
+              ).to match(file)
+            end
           end
 
-          it 'attached file matches attachment file' do
-            user.avatar.attach(base64_data)
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user.avatar.attach(data_with_filename)
 
-            expect(
-              File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
-            ).to match(file)
+              expect(user.avatar.filename.to_s).to eq(filename)
+            end
           end
         end
 
-        context 'when filename is specified along with data' do
-          it 'assigns the specified filename' do
-            user.avatar.attach(data_with_filename)
+        context 'when comes in the form of an ActionController::Parameters' do
+          let(:base64_data) do
+            params = ActionController::Parameters.new(data: "data:image/jpeg;base64,#{Base64.encode64(file)}")
+            params.permit(:data)
+          end
 
-            expect(user.avatar.filename.to_s).to eq(filename)
+          context 'when only data is specified' do
+            it 'attaches an avatar to the user' do
+              user.avatar.attach(base64_data)
+
+              expect(user.avatar.attached?).to be
+            end
+
+            it 'matches the attachment file' do
+              user.avatar.attach(base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
+              ).to match(file)
+            end
+          end
+
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user.avatar.attach(data_with_filename)
+
+              expect(user.avatar.filename.to_s).to eq(filename)
+            end
           end
         end
       end
 
       context 'when "user.avatar=" is called' do
-        context 'when only data is specified' do
-          it 'attaches an avatar to the user' do
-            user.avatar = base64_data
-            user.save
+        context 'when it comes in the form of a Hash' do
+          let(:base64_data) { { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" } }
 
-            expect(user.avatar.attached?).to be
+          context 'when only data is specified' do
+            it 'attaches an avatar to the user' do
+              user.avatar = base64_data
+              user.save
+
+              expect(user.avatar.attached?).to be
+            end
+
+            it 'attached file matches attachment file' do
+              user.avatar = base64_data
+              user.save
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
+              ).to match(file)
+            end
           end
 
-          it 'attached file matches attachment file' do
-            user.avatar = base64_data
-            user.save
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user.avatar = data_with_filename
+              user.save
 
-            expect(
-              File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
-            ).to match(file)
+              expect(user.avatar.filename.to_s).to eq(filename)
+            end
           end
         end
 
-        context 'when filename is specified along with data' do
-          it 'assigns the specified filename' do
-            user.avatar = data_with_filename
-            user.save
+        context 'when it comes in the form of an ActionController::Parameters' do
+          let(:base64_data) do
+            params = ActionController::Parameters.new(data: "data:image/jpeg;base64,#{Base64.encode64(file)}")
+            params.permit(:data)
+          end
 
-            expect(user.avatar.filename.to_s).to eq(filename)
+          context 'when only data is specified' do
+            it 'attaches an avatar to the user' do
+              user.avatar = base64_data
+              user.save
+
+              expect(user.avatar.attached?).to be
+            end
+
+            it 'attached file matches attachment file' do
+              user.avatar = base64_data
+              user.save
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
+              ).to match(file)
+            end
+          end
+
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user.avatar = data_with_filename
+              user.save
+
+              expect(user.avatar.filename.to_s).to eq(filename)
+            end
           end
         end
       end
 
-      context 'when the avatar is sent as a hash parameter to the user' do
-        context 'when only data is specified' do
+      context 'when user is created' do
+        context 'when it comes in the form of a Hash' do
+          let(:base64_data) { { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" } }
+
+          context 'when only data is specified' do
+            it 'attaches an avatar to the user' do
+              user = User.create!(username: 'peterparker', avatar: base64_data)
+
+              expect(user.avatar.attached?).to be
+            end
+
+            it 'attached file matches attachment file' do
+              user = User.create!(username: 'peterparker', avatar: base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
+              ).to match(file)
+            end
+          end
+
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user = User.create!(username: 'peterparker', avatar: data_with_filename)
+
+              expect(user.avatar.filename).to eq(filename)
+            end
+          end
+        end
+
+        context 'when it comes in the form of ActionController::Parameters' do
+          let(:avatar_params) { { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" } }
+          let(:user_params) do
+            params = ActionController::Parameters.new(
+              username: 'peterparker', avatar: avatar_params
+            )
+            params.permit(:name, avatar: avatar_params.keys)
+          end
+
           it 'attaches an avatar to the user' do
-            user = User.create(avatar: base64_data)
+            user = User.create!(user_params)
 
             expect(user.avatar.attached?).to be
           end
 
           it 'attached file matches attachment file' do
-            user = User.create(avatar: base64_data)
+            user = User.create!(user_params)
 
             expect(
               File.open(ActiveStorage::Blob.service.send(:path_for, user.avatar.key)).read
             ).to match(file)
           end
-        end
 
-        context 'when filename is specified along with data' do
-          it 'assigns the specified filename' do
-            user = User.create(avatar: data_with_filename)
+          context 'when filename is specified along with data' do
+            let(:avatar_params) { data_with_filename }
 
-            expect(user.avatar.filename).to eq(filename)
+            it 'assigns the specified filename' do
+              user = User.create!(user_params)
+
+              expect(user.avatar.filename).to eq(filename)
+            end
           end
         end
       end
@@ -116,8 +227,8 @@ RSpec.describe 'Attach base64' do
       end
     end
 
-    context 'when user has an avatar attached' do
-      let(:user) { User.create(avatar: base64_data) }
+    context 'when user already has an avatar attached' do
+      let(:user) { User.create!(avatar: base64_data) }
 
       context 'when the user wants to remove the avatar' do
         it 'removes the avatar' do

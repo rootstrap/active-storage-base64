@@ -4,6 +4,8 @@ module ActiveStorageSupport
     module_function
 
     def attachment_from_data(attachment)
+      attachment = attachment.to_h if attachment.is_a?(ActionController::Parameters)
+
       if attachment.is_a?(Hash)
         attachment = attachment.symbolize_keys
         fill_attachment_data(attachment, attachment.delete(:data))
