@@ -57,7 +57,9 @@ RSpec.describe 'Attach base64' do
 
         context 'when comes in the form of an ActionController::Parameters' do
           let(:base64_data) do
-            params = ActionController::Parameters.new(data: "data:image/jpeg;base64,#{Base64.encode64(file)}")
+            params = ActionController::Parameters.new(
+              data: "data:image/jpeg;base64,#{Base64.encode64(file)}"
+            )
             params.permit(:data)
           end
 
@@ -121,7 +123,9 @@ RSpec.describe 'Attach base64' do
 
         context 'when it comes in the form of an ActionController::Parameters' do
           let(:base64_data) do
-            params = ActionController::Parameters.new(data: "data:image/jpeg;base64,#{Base64.encode64(file)}")
+            params = ActionController::Parameters.new(
+              data: "data:image/jpeg;base64,#{Base64.encode64(file)}"
+            )
             params.permit(:data)
           end
 
@@ -258,146 +262,335 @@ RSpec.describe 'Attach base64' do
       end
 
       context 'when "user.pictures.attach" is called' do
-        context 'when it is called with only one picture' do
-          context 'when only data is specified' do
-            it 'attaches a picture to the user' do
-              user.pictures.attach(base64_data)
+        context 'when it comes in the form of a Hash' do
+          let(:base64_data) do
+            { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" }
+          end
 
-              expect(user.pictures.attached?).to be
+          let(:second_base64_data) do
+            { data: "data:image/png;base64,#{Base64.encode64(second_file)}" }
+          end
+
+          context 'when it is called with only one picture' do
+            context 'when only data is specified' do
+              it 'attaches a picture to the user' do
+                user.pictures.attach(base64_data)
+
+                expect(user.pictures.attached?).to be
+              end
+
+              it 'attached file matches attachment file' do
+                user.pictures.attach(base64_data)
+
+                expect(
+                  File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                             user.pictures.first.key)).read
+                ).to match(file)
+              end
             end
 
-            it 'attached file matches attachment file' do
-              user.pictures.attach(base64_data)
+            context 'when a filename is specified along with data' do
+              it 'assigns the specified filename' do
+                user.pictures.attach(data_with_filename)
 
-              expect(
-                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.first.key)).read
-              ).to match(file)
+                expect(user.pictures.first.filename.to_s). to eq(filename)
+              end
             end
           end
 
-          context 'when a filename is specified along with data' do
-            it 'assigns the specified filename' do
-              user.pictures.attach(data_with_filename)
+          context 'when it is called with more than one picture' do
+            context 'when only data is specified' do
+              it 'attaches an array of pictures to the user' do
+                user.pictures.attach(pictures_attachments)
 
-              expect(user.pictures.first.filename.to_s). to eq(filename)
+                expect(user.pictures.count).to eq(2)
+              end
+
+              it 'attached file matches attachment file' do
+                user.pictures.attach(pictures_attachments)
+
+                expect(
+                  File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                             user.pictures.last.key)).read
+                ).to match(second_file)
+              end
+
+              it 'attaches multiple individual pictures to the user' do
+                user.pictures.attach(base64_data)
+                user.pictures.attach(second_base64_data)
+
+                expect(user.pictures.count).to eq(2)
+              end
+            end
+
+            context 'when pictures have a specific filename' do
+              it 'assigns the specified filename for the array of pictures' do
+                user.pictures.attach(attachments_with_filename)
+
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.second.filename.to_s).to eq(second_filename)
+              end
+
+              it 'assigns the specifiied filename for each individual picture' do
+                user.pictures.attach(data_with_filename)
+                user.pictures.attach(second_data_with_filename)
+
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.second.filename.to_s).to eq(second_filename)
+              end
             end
           end
         end
 
-        context 'when it is called with more than one picture' do
-          context 'when only data is specified' do
-            it 'attaches an array of pictures to the user' do
-              user.pictures.attach(pictures_attachments)
+        context 'when it comes in the form of a ActionController::Parameters' do
+          let(:base64_data) do
+            params = ActionController::Parameters.new(
+              data: "data:image/jpeg;base64,#{Base64.encode64(file)}"
+            )
+            params.permit(:data)
+          end
 
-              expect(user.pictures.count).to eq(2)
+          let(:second_base64_data) do
+            params = ActionController::Parameters.new(
+              data: "data:image/jpeg;base64,#{Base64.encode64(second_file)}"
+            )
+            params.permit(:data)
+          end
+
+          context 'when it is called with only one picture' do
+            context 'when only data is specified' do
+              it 'attaches a picture to the user' do
+                user.pictures.attach(base64_data)
+
+                expect(user.pictures.attached?).to be
+              end
+
+              it 'attached file matches attachment file' do
+                user.pictures.attach(base64_data)
+
+                expect(
+                  File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                             user.pictures.first.key)).read
+                ).to match(file)
+              end
             end
 
-            it 'attached file matches attachment file' do
-              user.pictures.attach(pictures_attachments)
+            context 'when a filename is specified along with data' do
+              it 'assigns the specified filename' do
+                user.pictures.attach(data_with_filename)
 
-              expect(
-                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
-              ).to match(second_file)
-            end
-
-            it 'attaches multiple individual pictures to the user' do
-              user.pictures.attach(base64_data)
-              user.pictures.attach(second_base64_data)
-
-              expect(user.pictures.count).to eq(2)
+                expect(user.pictures.first.filename.to_s). to eq(filename)
+              end
             end
           end
 
-          context 'when pictures have a specific filename' do
-            it 'assigns the specified filename for the array of pictures' do
-              user.pictures.attach(attachments_with_filename)
+          context 'when it is called with more than one picture' do
+            context 'when only data is specified' do
+              it 'attaches an array of pictures to the user' do
+                user.pictures.attach(pictures_attachments)
 
-              expect(user.pictures.first.filename.to_s).to eq(filename)
-              expect(user.pictures.second.filename.to_s).to eq(second_filename)
+                expect(user.pictures.count).to eq(2)
+              end
+
+              it 'attached file matches attachment file' do
+                user.pictures.attach(pictures_attachments)
+
+                expect(
+                  File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                             user.pictures.last.key)).read
+                ).to match(second_file)
+              end
+
+              it 'attaches multiple individual pictures to the user' do
+                user.pictures.attach(base64_data)
+                user.pictures.attach(second_base64_data)
+
+                expect(user.pictures.count).to eq(2)
+              end
             end
 
-            it 'assigns the specifiied filename for each individual picture' do
-              user.pictures.attach(data_with_filename)
-              user.pictures.attach(second_data_with_filename)
+            context 'when pictures have a specific filename' do
+              it 'assigns the specified filename for the array of pictures' do
+                user.pictures.attach(attachments_with_filename)
 
-              expect(user.pictures.first.filename.to_s).to eq(filename)
-              expect(user.pictures.second.filename.to_s).to eq(second_filename)
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.second.filename.to_s).to eq(second_filename)
+              end
+
+              it 'assigns the specifiied filename for each individual picture' do
+                user.pictures.attach(data_with_filename)
+                user.pictures.attach(second_data_with_filename)
+
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.second.filename.to_s).to eq(second_filename)
+              end
             end
           end
         end
       end
 
       context 'when "user.pictures=" is called' do
-        context 'when it is called with only one picture' do
-          context 'when only data is specified' do
-            it 'attaches a picture to the user' do
-              user.pictures = base64_data
-              user.save
+        context 'when it comes in form of a Hash' do
+          let(:base64_data) { { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" } }
 
-              expect(user.pictures.attached?).to be
+          context 'when it is called with only one picture' do
+            context 'when only data is specified' do
+              it 'attaches a picture to the user' do
+                user.pictures = base64_data
+                user.save
+
+                expect(user.pictures.attached?).to be
+              end
+
+              it 'attached file matches attachment file' do
+                user.pictures = base64_data
+                user.save
+
+                expect(
+                  File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                             user.pictures.last.key)).read
+                ).to match(file)
+              end
             end
 
-            it 'attached file matches attachment file' do
-              user.pictures = base64_data
-              user.save
+            context 'when filename is specified' do
+              it 'assigns the specified filename' do
+                user.pictures = data_with_filename
+                user.save
 
-              expect(
-                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
-              ).to match(file)
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+              end
             end
           end
 
-          context 'when filename is specified' do
-            it 'assigns the specified filename' do
-              user.pictures = data_with_filename
-              user.save
+          context 'when it is called with more than one picture' do
+            context 'when only data is specified' do
+              it 'attaches an array of pictures to the user' do
+                user.pictures = pictures_attachments
+                user.save
 
-              expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.count).to eq(2)
+              end
+
+              it 'attached file matches attachment file' do
+                user.pictures = pictures_attachments
+                user.save
+
+                expect(
+                  File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                             user.pictures.last.key)).read
+                ).to match(second_file)
+              end
+
+              it 'attaches multiple individual pictures to the user' do
+                user.pictures = [base64_data, second_base64_data]
+                user.save
+
+                expect(user.pictures.count).to eq(2)
+              end
+            end
+
+            context 'when pictures have a specified filename' do
+              it 'assigns the specified filename for the array of pictures' do
+                user.pictures = attachments_with_filename
+                user.save
+
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.second.filename.to_s).to eq(second_filename)
+              end
+
+              it 'assigns the specified filename for each individual picture' do
+                user.pictures = [data_with_filename, second_data_with_filename]
+                user.save
+
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.second.filename.to_s).to eq(second_filename)
+              end
             end
           end
         end
 
-        context 'when it is called with more than one picture' do
-          context 'when only data is specified' do
-            it 'attaches an array of pictures to the user' do
-              user.pictures = pictures_attachments
-              user.save
+        context 'when it comes in the form of a ActionController::Parameters' do
+          let(:base64_data) do
+            params = ActionController::Parameters.new(
+              data: "data:image/jpeg;base64,#{Base64.encode64(file)}"
+            )
+            params.permit(:data)
+          end
 
-              expect(user.pictures.count).to eq(2)
+          context 'when it is called with only one picture' do
+            context 'when only data is specified' do
+              it 'attaches a picture to the user' do
+                user.pictures = base64_data
+                user.save
+
+                expect(user.pictures.attached?).to be
+              end
+
+              it 'attached file matches attachment file' do
+                user.pictures = base64_data
+                user.save
+
+                expect(
+                  File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                             user.pictures.last.key)).read
+                ).to match(file)
+              end
             end
 
-            it 'attached file matches attachment file' do
-              user.pictures = pictures_attachments
-              user.save
+            context 'when filename is specified' do
+              it 'assigns the specified filename' do
+                user.pictures = data_with_filename
+                user.save
 
-              expect(
-                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
-              ).to match(second_file)
-            end
-
-            it 'attaches multiple individual pictures to the user' do
-              user.pictures = [base64_data, second_base64_data]
-              user.save
-
-              expect(user.pictures.count).to eq(2)
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+              end
             end
           end
 
-          context 'when pictures have a specified filename' do
-            it 'assigns the specified filename for the array of pictures' do
-              user.pictures = attachments_with_filename
-              user.save
+          context 'when it is called with more than one picture' do
+            context 'when only data is specified' do
+              it 'attaches an array of pictures to the user' do
+                user.pictures = pictures_attachments
+                user.save
 
-              expect(user.pictures.first.filename.to_s).to eq(filename)
-              expect(user.pictures.second.filename.to_s).to eq(second_filename)
+                expect(user.pictures.count).to eq(2)
+              end
+
+              it 'attached file matches attachment file' do
+                user.pictures = pictures_attachments
+                user.save
+
+                expect(
+                  File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                             user.pictures.last.key)).read
+                ).to match(second_file)
+              end
+
+              it 'attaches multiple individual pictures to the user' do
+                user.pictures = [base64_data, second_base64_data]
+                user.save
+
+                expect(user.pictures.count).to eq(2)
+              end
             end
 
-            it 'assigns the specified filename for each individual picture' do
-              user.pictures = [data_with_filename, second_data_with_filename]
-              user.save
+            context 'when pictures have a specified filename' do
+              it 'assigns the specified filename for the array of pictures' do
+                user.pictures = attachments_with_filename
+                user.save
 
-              expect(user.pictures.first.filename.to_s).to eq(filename)
-              expect(user.pictures.second.filename.to_s).to eq(second_filename)
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.second.filename.to_s).to eq(second_filename)
+              end
+
+              it 'assigns the specified filename for each individual picture' do
+                user.pictures = [data_with_filename, second_data_with_filename]
+                user.save
+
+                expect(user.pictures.first.filename.to_s).to eq(filename)
+                expect(user.pictures.second.filename.to_s).to eq(second_filename)
+              end
             end
           end
         end
@@ -416,7 +609,60 @@ RSpec.describe 'Attach base64' do
               user = User.create(pictures: base64_data)
 
               expect(
-                File.open(ActiveStorage::Blob.service.send(:path_for, user.pictures.last.key)).read
+                File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                           user.pictures.last.key)).read
+              ).to match(file)
+            end
+          end
+
+          context 'when a filename is specified' do
+            it 'assigns the specified filename' do
+              user = User.create(pictures: data_with_filename)
+
+              expect(user.pictures.first.filename.to_s).to eq(filename)
+            end
+          end
+        end
+
+        context 'when an array of pictures is passed' do
+          it 'attaches multiple pictures' do
+            user = User.create(pictures: attachments_with_filename)
+
+            expect(user.pictures.first.filename.to_s).to eq(filename)
+            expect(user.pictures.second.filename.to_s).to eq(second_filename)
+          end
+        end
+      end
+
+      context 'when pictures are passed as a ActionController::Parameters' do
+        let(:base64_data) do
+          params = ActionController::Parameters.new(
+            data: "data:image/jpeg;base64,#{Base64.encode64(file)}"
+          )
+          params.permit(:data)
+        end
+
+        let(:second_base64_data) do
+          params = ActionController::Parameters.new(
+            data: "data:image/jpeg;base64,#{Base64.encode64(second_file)}"
+          )
+          params.permit(:data)
+        end
+
+        context 'when a single picture is passed' do
+          context 'when only data is specified' do
+            it 'attaches a picture' do
+              user = User.create(pictures: base64_data)
+
+              expect(user.pictures.attached?).to be
+            end
+
+            it 'attached file matches attachment file' do
+              user = User.create(pictures: base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for,
+                                                           user.pictures.last.key)).read
               ).to match(file)
             end
           end
@@ -441,75 +687,182 @@ RSpec.describe 'Attach base64' do
       end
 
       context 'when user already has pictures attached' do
-        context 'when user has only one picture attached' do
-          let(:user) { User.create(pictures: base64_data) }
+        context 'when pictures are passed as a Hash' do
+          let(:base64_data) { { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" } }
+          let(:second_base64_data) do
+            { data: "data:image/png;base64,#{Base64.encode64(second_file)}" }
+          end
 
-          context 'when the user wants to remove the picture' do
-            it 'removes the picture' do
-              user.pictures.purge
+          context 'when user has only one picture attached' do
+            let(:user) { User.create(pictures: base64_data) }
 
-              expect(user.pictures.attached?).not_to be
+            context 'when the user wants to remove the picture' do
+              it 'removes the picture' do
+                user.pictures.purge
+
+                expect(user.pictures.attached?).not_to be
+              end
+            end
+          end
+
+          context 'when user has multiple pictures attached' do
+            let(:user) { User.create(pictures: pictures_attachments) }
+
+            context 'when user wants to remove the pictures' do
+              it 'removes the pictures' do
+                user.pictures.purge
+
+                expect(user.pictures.attached?).not_to be
+              end
+            end
+
+            context 'when a url for a picture is required' do
+              it 'returns a url for the picture' do
+                url = rails_url.rails_blob_url(user.pictures.first, disposition: 'attachment')
+
+                expect(url).to be
+              end
+
+              it 'url for pictures is different' do
+                first_url = rails_url.rails_blob_url(
+                  user.pictures.first,
+                  disposition: 'attachment'
+                )
+                second_url = rails_url.rails_blob_url(
+                  user.pictures.second,
+                  disposition: 'attachment'
+                )
+
+                expect(first_url).not_to eq(second_url)
+              end
+            end
+
+            context 'when replacing on assign' do
+              before do
+                @previous = ActiveStorage.replace_on_assign_to_many
+                ActiveStorage.replace_on_assign_to_many = true
+              end
+
+              after do
+                ActiveStorage.replace_on_assign_to_many = @previous
+              end
+
+              it 'updates the existing record replacing attachments' do
+                user.pictures = pictures_attachments
+                user.save
+                expect(user.pictures.count).to eq(2)
+              end
+            end
+
+            context 'when appending on assign' do
+              before do
+                @previous = ActiveStorage.replace_on_assign_to_many
+                ActiveStorage.replace_on_assign_to_many = false
+              end
+
+              after do
+                ActiveStorage.replace_on_assign_to_many = @previous
+              end
+
+              it 'updates the existing record appending the new attachments' do
+                user.pictures = pictures_attachments
+                user.save
+                expect(user.pictures.count).to eq(4)
+              end
             end
           end
         end
 
-        context 'when user has multiple pictures attached' do
-          let(:user) { User.create(pictures: pictures_attachments) }
+        context 'when pictures are passed as a ActionController::Parameters' do
+          let(:base64_data) do
+            params = ActionController::Parameters.new(
+              data: "data:image/jpeg;base64,#{Base64.encode64(file)}"
+            )
+            params.permit(:data)
+          end
 
-          context 'when user wants to remove the pictures' do
-            it 'removes the pictures' do
-              user.pictures.purge
+          let(:second_base64_data) do
+            params = ActionController::Parameters.new(
+              data: "data:image/jpeg;base64,#{Base64.encode64(second_file)}"
+            )
+            params.permit(:data)
+          end
+          context 'when user has only one picture attached' do
+            let(:user) { User.create(pictures: base64_data) }
 
-              expect(user.pictures.attached?).not_to be
+            context 'when the user wants to remove the picture' do
+              it 'removes the picture' do
+                user.pictures.purge
+
+                expect(user.pictures.attached?).not_to be
+              end
             end
           end
 
-          context 'when a url for a picture is required' do
-            it 'returns a url for the picture' do
-              url = rails_url.rails_blob_url(user.pictures.first, disposition: 'attachment')
+          context 'when user has multiple pictures attached' do
+            let(:user) { User.create(pictures: pictures_attachments) }
 
-              expect(url).to be
+            context 'when user wants to remove the pictures' do
+              it 'removes the pictures' do
+                user.pictures.purge
+
+                expect(user.pictures.attached?).not_to be
+              end
             end
 
-            it 'url for pictures is different' do
-              first_url = rails_url.rails_blob_url(user.pictures.first, disposition: 'attachment')
-              second_url = rails_url.rails_blob_url(user.pictures.second, disposition: 'attachment')
+            context 'when a url for a picture is required' do
+              it 'returns a url for the picture' do
+                url = rails_url.rails_blob_url(user.pictures.first, disposition: 'attachment')
 
-              expect(first_url).not_to eq(second_url)
-            end
-          end
+                expect(url).to be
+              end
 
-          context 'when replacing on assign' do
-            before do
-              @previous = ActiveStorage.replace_on_assign_to_many
-              ActiveStorage.replace_on_assign_to_many = true
-            end
+              it 'url for pictures is different' do
+                first_url = rails_url.rails_blob_url(
+                  user.pictures.first,
+                  disposition: 'attachment'
+                )
+                second_url = rails_url.rails_blob_url(
+                  user.pictures.second,
+                  disposition: 'attachment'
+                )
 
-            after do
-              ActiveStorage.replace_on_assign_to_many = @previous
-            end
-
-            it 'updates the existing record replacing attachments' do
-              user.pictures = pictures_attachments
-              user.save
-              expect(user.pictures.count).to eq(2)
-            end
-          end
-
-          context 'when appending on assign' do
-            before do
-              @previous = ActiveStorage.replace_on_assign_to_many
-              ActiveStorage.replace_on_assign_to_many = false
+                expect(first_url).not_to eq(second_url)
+              end
             end
 
-            after do
-              ActiveStorage.replace_on_assign_to_many = @previous
+            context 'when replacing on assign' do
+              before do
+                @previous = ActiveStorage.replace_on_assign_to_many
+                ActiveStorage.replace_on_assign_to_many = true
+              end
+
+              after do
+                ActiveStorage.replace_on_assign_to_many = @previous
+              end
+
+              it 'updates the existing record replacing attachments' do
+                user.pictures = pictures_attachments
+                user.save
+                expect(user.pictures.count).to eq(2)
+              end
             end
 
-            it 'updates the existing record appending the new attachments' do
-              user.pictures = pictures_attachments
-              user.save
-              expect(user.pictures.count).to eq(4)
+            context 'when appending on assign' do
+              before do
+                @previous = ActiveStorage.replace_on_assign_to_many
+                ActiveStorage.replace_on_assign_to_many = false
+              end
+
+              after do
+                ActiveStorage.replace_on_assign_to_many = @previous
+              end
+
+              it 'updates the existing record appending the new attachments' do
+                user.pictures = pictures_attachments
+                user.save
+                expect(user.pictures.count).to eq(4)
+              end
             end
           end
         end
