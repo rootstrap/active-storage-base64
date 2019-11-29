@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-on your controller you could do something like this:
+on your controller you could do any of the following:
 ```ruby
 class UsersController < ApplicationController
   def create
@@ -69,17 +69,16 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(avatar: [:data], :username, :email)
+    params.require(:user).permit(avatar: :data, :username, :email)
   end
 end
 ```
 
-Or you could also do:
 ```ruby
 class UsersController < ApplicationController
   def create
     user = User.create(user_params)
-    user.avatar.attach(params[:avatar])
+    user.avatar.attach(data: params[:avatar]) # params[:avatar] => 'data:image/png;base64,[base64 data]'
   end
 
   private
@@ -90,12 +89,30 @@ class UsersController < ApplicationController
 end
 ```
 
-Here's another option to achieve the same:
 ```ruby
 class UsersController < ApplicationController
   def create
     user = User.create(user_params)
-    user.avatar = { data: params[:avatar] }
+    user.avatar.attach(avatar_params) # avatar_params => { data: 'data:image/png;base64,[base64 data]' }
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:username, :email)
+  end
+
+  def avatar_params
+    params.require(:avatar).permit(:data)
+  end
+end
+```
+
+```ruby
+class UsersController < ApplicationController
+  def create
+    user = User.create(user_params)
+    user.avatar = { data: params[:avatar] } # params[:avatar] => 'data:image/png;base64,[base64 data]'
     user.save
   end
 
@@ -115,7 +132,7 @@ Check the following example:
 class UsersController < ApplicationController
   def create
     user = User.create(user_params)
-    user.avatar.attach(data: params[:avatar], filename: 'your_filename', content_type: 'content/type', identify: 'false')
+    user.avatar.attach(data: params[:avatar], filename: 'your_filename', content_type: 'content/type', identify: 'false') # params[:avatar] => 'data:image/png;base64,[base64 data]'
   end
 
   private
