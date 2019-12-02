@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   # Development dependencies
   s.add_development_dependency 'pry-rails', '~> 0.3.6'
-  s.add_development_dependency 'reek', '~> 4.8.1'
+  s.add_development_dependency 'reek', '~> 5.5.0'
   s.add_development_dependency 'rspec-rails', '~> 3.8.0'
   s.add_development_dependency 'rubocop', '~> 0.56.0'
   s.add_development_dependency 'simplecov'
