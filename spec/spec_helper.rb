@@ -1,5 +1,5 @@
 ENV['RAILS_ENV'] ||= 'test'
-require_relative 'dummy/config/environment.rb'
+require 'dummy/config/environment.rb'
 require 'pry'
 
 require 'simplecov'

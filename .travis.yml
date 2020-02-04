@@ -1,18 +1,15 @@
 language: ruby
 
-before_install:
-  - gem install bundler -v "~> 1.17"
-
 rvm:
   - 2.5.0
   - 2.6.0
   - ruby-head
 
-matrix:
+dist: bionic
+
+jobs:
   allow_failures:
     - rvm: ruby-head
-
-sudo: false
 
 env:
   global:
