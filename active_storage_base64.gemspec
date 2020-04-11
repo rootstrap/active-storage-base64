@@ -4,9 +4,7 @@ Gem::Specification.new do |s|
   s.summary = 'Base64 support for ActiveStorage'
   s.description = s.summary
 
-  s.files = Dir.chdir(File.expand_path('..', __FILE__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  end
+  s.files = Dir['LICENSE.txt', 'README.md', 'lib/**/*']
 
   s.require_paths = ['lib']
   s.authors = ['Ricardo Cortio']
