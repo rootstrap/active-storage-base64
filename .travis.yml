@@ -3,7 +3,12 @@ language: ruby
 rvm:
   - 2.5.0
   - 2.6.0
+  - 2.7.0
   - ruby-head
+
+gemfile:
+  - gemfiles/rails_6_1.gemfile
+  - gemfiles/rails_head.gemfile
 
 dist: bionic
 
