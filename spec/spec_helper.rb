@@ -1,15 +1,13 @@
 ENV['RAILS_ENV'] ||= 'test'
 require 'dummy/config/environment.rb'
-require 'pry'
-
+require 'fileutils'
 require 'simplecov'
+
+FileUtils.rm_rf('./spec/dummy/tmp/storage')
+
 SimpleCov.start
 
 Rails.application.routes.default_url_options[:host] = 'localhost:3000'
-
-require 'tmpdir'
-ActiveStorage::Blob.service =
-  ActiveStorage::Service::DiskService.new(root: Dir.mktmpdir('active_storage_tests'))
 
 ActiveRecord::Base.establish_connection(
   adapter: 'sqlite3',

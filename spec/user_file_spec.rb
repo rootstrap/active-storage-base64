@@ -68,7 +68,7 @@ RSpec.describe 'Attach file' do
         it 'raises a Module::DelegationError error' do
           expect do
             rails_url.rails_blob_url(user.avatar, disposition: 'attachment')
-          end.to raise_error(Module::DelegationError)
+          end.to raise_error(ActionController::UrlGenerationError)
         end
       end
     end

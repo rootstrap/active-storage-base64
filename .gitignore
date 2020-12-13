@@ -2,4 +2,5 @@ Gemfile.lock
 gemfiles/*.lock
 spec/dummy/log
 spec/dummy/db/**.sqlite3
+spec/dummy/tmp/storage/**/*
 /coverage/
