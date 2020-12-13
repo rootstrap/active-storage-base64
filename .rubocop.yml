@@ -42,7 +42,7 @@ Metrics/ModuleLength:
   Max: 200
 
 Metrics/LineLength:
-  Max: 100
+  Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
   # containing a URI to be longer than Max.
   AllowURI: true
