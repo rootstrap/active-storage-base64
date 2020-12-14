@@ -4,7 +4,9 @@ detectors:
     exclude: []
   BooleanParameter:
     enabled: true
-    exclude: []
+    exclude:
+      - ActiveStorageSupport::SupportForBase64#has_many_base64_attached
+      - ActiveStorageSupport::SupportForBase64#has_one_base64_attached
   ClassVariable:
     enabled: false
     exclude: []
