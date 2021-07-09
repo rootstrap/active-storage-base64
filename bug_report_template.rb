@@ -57,7 +57,7 @@ end
 require 'minitest/autorun'
 
 class BugTest < Minitest::Test
-  def test_upload_and_download
+  def test_attachment
     filename = 'generic-logo.png'
     file = File.open(File.expand_path(File.join(File.dirname(__FILE__), 'spec', 'fixtures', filename))).read
     data = "data:image/png;base64,#{Base64.encode64(file)}"
