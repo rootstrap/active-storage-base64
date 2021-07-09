@@ -15,7 +15,7 @@ gem 'active_storage_base64'
 
 ## Prerequisites
 
-The only prerequisites for using this gem are having Rails version 5.2.0 or higher installed on your project and having ActiveStorage properly set up (for more information on how to do this, check [Active Storage Overview](https://edgeguides.rubyonrails.org/active_storage_overview.html))
+The only prerequisites for using this gem are having Rails version 6.1 or higher installed on your project and having ActiveStorage properly set up (for more information on how to do this, check [Active Storage Overview](https://edgeguides.rubyonrails.org/active_storage_overview.html))
 
 ## Usage
 
