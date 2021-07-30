@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/rootstrap/active-storage-base64.svg?branch=master)](https://travis-ci.org/rootstrap/active-storage-base64)
+[![CI](https://github.com/rootstrap/active-storage-base64/actions/workflows/ci.yml/badge.svg)](https://github.com/rootstrap/active-storage-base64/actions/workflows/ci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0da0a0901cedd72aeb10/maintainability)](https://codeclimate.com/github/rootstrap/active-storage-base64/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0da0a0901cedd72aeb10/test_coverage)](https://codeclimate.com/github/rootstrap/active-storage-base64/test_coverage)
 
