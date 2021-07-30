@@ -32,11 +32,11 @@ jobs:
         ./cc-test-reporter before-build
     - name: Build and test with Rake
       run: |
-        gem install bundler:1.17.3
-        bundle _1.17.3_ update
-        bundle _1.17.3_ install --gemfile gemfiles/${{ matrix.gemfile }} --jobs 4 --retry 3
-        bundle _1.17.3_ exec rake code_analysis
-        bundle _1.17.3_ exec rspec
+        gem install bundler
+        bundle update
+        bundle install --gemfile gemfiles/${{ matrix.gemfile }} --jobs 4 --retry 3
+        bundle exec rake code_analysis
+        bundle exec rspec
     - name: Report to CodeClimate
       run: |
         ./cc-test-reporter after-build --exit-code 0
