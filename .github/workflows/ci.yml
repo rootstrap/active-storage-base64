@@ -1,0 +1,42 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        gemfile: [rails_6_1.gemfile, rails_head.gemfile]
+        ruby_version: [2.5, 2.6, 2.7]
+        exclude:
+          - gemfile: rails_head.gemfile
+            ruby_version: 2.5
+          - gemfile: rails_head.gemfile
+            ruby_version: 2.6
+    env:
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}
+      CC_TEST_REPORTER_ID: 7196b4aa257fde33f24463218af32db6a6efd23d9148204822f757fa614a093e
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby_version }}
+    - name: Before build
+      run: |
+        sudo apt-get install libsqlite3-dev
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+        ./cc-test-reporter before-build
+    - name: Build and test with Rake
+      run: |
+        gem install bundler
+        bundle update
+        bundle install --gemfile gemfiles/${{ matrix.gemfile }} --jobs 4 --retry 3
+        bundle exec rake code_analysis
+        bundle exec rspec
+    - name: Report to CodeClimate
+      run: |
+        ./cc-test-reporter after-build --exit-code 0
