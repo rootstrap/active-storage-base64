@@ -14,6 +14,7 @@ module ActiveStorageSupport
             @active_storage_attached ||= {}
             @active_storage_attached[:#{name}] ||= ActiveStorageSupport::Base64One.new("#{name}", self)
           end
+
           def #{name}=(attachable)
             attachment_changes["#{name}"] =
               if attachable.nil?
@@ -36,6 +37,7 @@ module ActiveStorageSupport
             @active_storage_attached ||= {}
             @active_storage_attached[:#{name}] ||= ActiveStorageSupport::Base64Many.new("#{name}", self)
           end
+
           def #{name}=(attachables)
             if ActiveStorage.replace_on_assign_to_many
               attachment_changes["#{name}"] =
@@ -47,6 +49,12 @@ module ActiveStorageSupport
                   )
                 end
             else
+              ActiveSupport::Deprecation.warn \
+                "config.active_storage.replace_on_assign_to_many is deprecated and will be removed in Rails 7.1. " \
+                "Make sure that your code works well with config.active_storage.replace_on_assign_to_many set to true before upgrading. " \
+                "To append new attachables to the Active Storage association, prefer using `attach`. " \
+                "Using association setter would result in purging the existing attached attachments and replacing them with new ones."
+
               if Array(attachables).any?
                 attachment_changes["#{name}"] =
                   ActiveStorage::Attached::Changes::CreateMany.new(
