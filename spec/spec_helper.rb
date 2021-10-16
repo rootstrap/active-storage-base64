@@ -1,5 +1,5 @@
 ENV['RAILS_ENV'] ||= 'test'
-require 'dummy/config/environment.rb'
+require 'dummy/config/environment'
 require 'fileutils'
 require 'simplecov'
 

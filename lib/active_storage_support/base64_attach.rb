@@ -14,6 +14,7 @@ module ActiveStorageSupport
       attachment
     end
 
+    # rubocop:disable Metrics/AbcSize
     def fill_attachment_data(attachment, base64_data)
       return unless base64_data.try(:is_a?, String) && base64_data.strip.start_with?('data')
 
@@ -24,6 +25,7 @@ module ActiveStorageSupport
       attachment[:content_type] ||= content_type(headers)
       attachment[:filename]     ||= Time.current.to_i.to_s
     end
+    # rubocop:enable Metrics/AbcSize
 
     def content_type(headers)
       headers =~ /^data:(.*?)$/
