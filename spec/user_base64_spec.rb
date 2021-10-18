@@ -293,7 +293,7 @@ RSpec.describe 'Attach base64' do
               it 'assigns the specified filename' do
                 user.pictures.attach(data_with_filename)
 
-                expect(user.pictures.first.filename.to_s). to eq(filename)
+                expect(user.pictures.first.filename.to_s).to eq(filename)
               end
             end
           end
@@ -379,7 +379,7 @@ RSpec.describe 'Attach base64' do
               it 'assigns the specified filename' do
                 user.pictures.attach(data_with_filename)
 
-                expect(user.pictures.first.filename.to_s). to eq(filename)
+                expect(user.pictures.first.filename.to_s).to eq(filename)
               end
             end
           end
