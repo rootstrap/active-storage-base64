@@ -65,10 +65,10 @@ RSpec.describe 'Attach file' do
       end
 
       context 'when a link to the avatar file is required' do
-        it 'raises a Module::DelegationError error' do
+        it 'can not generate the URL and raises an error' do
           expect do
             rails_url.rails_blob_url(user.avatar, disposition: 'attachment')
-          end.to raise_error(ActionController::UrlGenerationError)
+          end.to raise_error(StandardError)
         end
       end
     end

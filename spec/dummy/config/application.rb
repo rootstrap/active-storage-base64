@@ -8,7 +8,6 @@ require 'active_job/railtie'
 require 'active_record/railtie'
 require 'action_controller/railtie'
 require 'action_view/railtie'
-require 'sprockets/railtie'
 require 'active_storage/engine'
 
 Bundler.require(*Rails.groups)
