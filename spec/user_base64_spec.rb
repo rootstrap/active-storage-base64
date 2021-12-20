@@ -250,6 +250,16 @@ RSpec.describe 'Attach base64' do
         end
       end
     end
+
+    context 'when using a variant' do
+      let(:user) { User.create!(avatar: base64_data) }
+
+      it 'returns a link' do
+        url = rails_url.rails_blob_url(user.avatar.variant(:thumb).processed)
+
+        expect(url).to be
+      end
+    end
   end
 
   context 'when user uses pictures' do
@@ -600,13 +610,13 @@ RSpec.describe 'Attach base64' do
         context 'when a single picture is passed' do
           context 'when only data is specified' do
             it 'attaches a picture' do
-              user = User.create(pictures: base64_data)
+              user = User.create!(pictures: base64_data)
 
               expect(user.pictures.attached?).to be
             end
 
             it 'attached file matches attachment file' do
-              user = User.create(pictures: base64_data)
+              user = User.create!(pictures: base64_data)
 
               expect(
                 File.open(ActiveStorage::Blob.service.send(:path_for,
@@ -617,7 +627,7 @@ RSpec.describe 'Attach base64' do
 
           context 'when a filename is specified' do
             it 'assigns the specified filename' do
-              user = User.create(pictures: data_with_filename)
+              user = User.create!(pictures: data_with_filename)
 
               expect(user.pictures.first.filename.to_s).to eq(filename)
             end
@@ -626,7 +636,7 @@ RSpec.describe 'Attach base64' do
 
         context 'when an array of pictures is passed' do
           it 'attaches multiple pictures' do
-            user = User.create(pictures: attachments_with_filename)
+            user = User.create!(pictures: attachments_with_filename)
 
             expect(user.pictures.first.filename.to_s).to eq(filename)
             expect(user.pictures.second.filename.to_s).to eq(second_filename)
@@ -652,13 +662,13 @@ RSpec.describe 'Attach base64' do
         context 'when a single picture is passed' do
           context 'when only data is specified' do
             it 'attaches a picture' do
-              user = User.create(pictures: base64_data)
+              user = User.create!(pictures: base64_data)
 
               expect(user.pictures.attached?).to be
             end
 
             it 'attached file matches attachment file' do
-              user = User.create(pictures: base64_data)
+              user = User.create!(pictures: base64_data)
 
               expect(
                 File.open(ActiveStorage::Blob.service.send(:path_for,
@@ -669,7 +679,7 @@ RSpec.describe 'Attach base64' do
 
           context 'when a filename is specified' do
             it 'assigns the specified filename' do
-              user = User.create(pictures: data_with_filename)
+              user = User.create!(pictures: data_with_filename)
 
               expect(user.pictures.first.filename.to_s).to eq(filename)
             end
@@ -678,7 +688,7 @@ RSpec.describe 'Attach base64' do
 
         context 'when an array of pictures is passed' do
           it 'attaches multiple pictures' do
-            user = User.create(pictures: attachments_with_filename)
+            user = User.create!(pictures: attachments_with_filename)
 
             expect(user.pictures.first.filename.to_s).to eq(filename)
             expect(user.pictures.second.filename.to_s).to eq(second_filename)
@@ -694,7 +704,7 @@ RSpec.describe 'Attach base64' do
           end
 
           context 'when user has only one picture attached' do
-            let(:user) { User.create(pictures: base64_data) }
+            let(:user) { User.create!(pictures: base64_data) }
 
             context 'when the user wants to remove the picture' do
               it 'removes the picture' do
@@ -706,7 +716,7 @@ RSpec.describe 'Attach base64' do
           end
 
           context 'when user has multiple pictures attached' do
-            let(:user) { User.create(pictures: pictures_attachments) }
+            let(:user) { User.create!(pictures: pictures_attachments) }
 
             context 'when user wants to remove the pictures' do
               it 'removes the pictures' do
@@ -788,7 +798,7 @@ RSpec.describe 'Attach base64' do
             params.permit(:data)
           end
           context 'when user has only one picture attached' do
-            let(:user) { User.create(pictures: base64_data) }
+            let(:user) { User.create!(pictures: base64_data) }
 
             context 'when the user wants to remove the picture' do
               it 'removes the picture' do
@@ -800,7 +810,7 @@ RSpec.describe 'Attach base64' do
           end
 
           context 'when user has multiple pictures attached' do
-            let(:user) { User.create(pictures: pictures_attachments) }
+            let(:user) { User.create!(pictures: pictures_attachments) }
 
             context 'when user wants to remove the pictures' do
               it 'removes the pictures' do
@@ -866,6 +876,16 @@ RSpec.describe 'Attach base64' do
             end
           end
         end
+      end
+    end
+
+    context 'when using a variant' do
+      let(:user) { User.create!(pictures: base64_data) }
+
+      it 'returns a link' do
+        url = rails_url.rails_blob_url(user.pictures.first.variant(:thumb).processed)
+
+        expect(url).to be
       end
     end
   end
