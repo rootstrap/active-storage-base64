@@ -7,15 +7,15 @@ Gem::Specification.new do |s|
   s.files = Dir['LICENSE.txt', 'README.md', 'lib/**/*']
 
   s.require_paths = ['lib']
-  s.authors = ['Ricardo Cortio']
+  s.authors = ['Ricardo Cortio', 'Santiago Bartesaghi']
   s.license = 'MIT'
   s.homepage = 'https://github.com/rootstrap/active-storage-base64'
-  s.email = 'ricardo@rootstrap.com'
+  s.email = ['ricardo@rootstrap.com', 'santiago.bartesaghi@rootstrap.com']
 
-  s.required_ruby_version = '>= 2.5.0'
+  s.required_ruby_version = '>= 2.7.0'
 
   # Dependencies
-  s.add_dependency 'rails', '>= 6.1'
+  s.add_dependency 'rails', '>= 7.0'
 
   # Development dependencies
   s.add_development_dependency 'pry-rails', '~> 0.3.6'

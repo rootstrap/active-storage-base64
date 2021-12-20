@@ -8,17 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        gemfile: [rails_6_1.gemfile, rails_7_0.gemfile, rails_head.gemfile]
-        ruby_version: [2.5, 2.6, 2.7, 3.0]
-        exclude:
-          - gemfile: rails_7_0.gemfile
-            ruby_version: 2.5
-          - gemfile: rails_7_0.gemfile
-            ruby_version: 2.6
-          - gemfile: rails_head.gemfile
-            ruby_version: 2.5
-          - gemfile: rails_head.gemfile
-            ruby_version: 2.6
+        gemfile: [rails_7_0.gemfile, rails_head.gemfile]
+        ruby_version: [2.7, 3.0]
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}
       CC_TEST_REPORTER_ID: 7196b4aa257fde33f24463218af32db6a6efd23d9148204822f757fa614a093e
