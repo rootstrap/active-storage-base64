@@ -52,13 +52,13 @@ RSpec.describe 'Attach file' do
 
       context 'when the avatar is sent as a hash parameter to the user' do
         it 'attaches an avatar to the user' do
-          user = User.create(avatar: file)
+          user = User.create!(avatar: file)
 
           expect(user.avatar.attached?).to be
         end
 
         it 'assigns the specified filename' do
-          user = User.create(avatar: file)
+          user = User.create!(avatar: file)
 
           expect(user.avatar.filename.to_s).to eq(filename)
         end
@@ -74,7 +74,7 @@ RSpec.describe 'Attach file' do
     end
 
     context 'when user has an avatar attached' do
-      let(:user) { User.create(avatar: file) }
+      let(:user) { User.create!(avatar: file) }
 
       context 'when the user wants to remove the avatar' do
         it 'removes the avatar' do
@@ -90,6 +90,16 @@ RSpec.describe 'Attach file' do
 
           expect(url).to be
         end
+      end
+    end
+
+    context 'when using a variant' do
+      let(:user) { User.create!(avatar: file) }
+
+      it 'returns a link' do
+        url = rails_url.rails_blob_url(user.avatar.variant(:thumb).processed)
+
+        expect(url).to be
       end
     end
   end
@@ -218,13 +228,13 @@ RSpec.describe 'Attach file' do
       context 'when pictures are passed as a hash parameter' do
         context 'when a single picture is passed' do
           it 'attaches a picture' do
-            user = User.create(pictures: file)
+            user = User.create!(pictures: file)
 
             expect(user.pictures.attached?).to be
           end
 
           it 'assigns the specified filename' do
-            user = User.create(pictures: file)
+            user = User.create!(pictures: file)
 
             expect(user.pictures.first.filename).to eq(filename)
           end
@@ -232,13 +242,13 @@ RSpec.describe 'Attach file' do
 
         context 'when an array of pictures is passed' do
           it 'attaches multiple pictures' do
-            user = User.create(pictures: pictures_attachments)
+            user = User.create!(pictures: pictures_attachments)
 
             expect(user.pictures.count).to eq(2)
           end
 
           it 'assigns the specified filename' do
-            user = User.create(pictures: pictures_attachments)
+            user = User.create!(pictures: pictures_attachments)
 
             expect(user.pictures.first.filename).to eq(filename)
             expect(user.pictures.second.filename).to eq(second_filename)
@@ -248,7 +258,7 @@ RSpec.describe 'Attach file' do
 
       context 'when user already has pictures attached' do
         context 'when user has only one picture attached' do
-          let(:user) { User.create(pictures: file) }
+          let(:user) { User.create!(pictures: file) }
 
           context 'when the user wants to remove the picture' do
             it 'removes the picture' do
@@ -260,7 +270,7 @@ RSpec.describe 'Attach file' do
         end
 
         context 'when user has multiple pictures attached' do
-          let(:user) { User.create(pictures: pictures_attachments) }
+          let(:user) { User.create!(pictures: pictures_attachments) }
 
           context 'when user wants to remove the pictures' do
             it 'removes the pictures' do
@@ -285,6 +295,16 @@ RSpec.describe 'Attach file' do
             end
           end
         end
+      end
+    end
+
+    context 'when using a variant' do
+      let(:user) { User.create!(pictures: pictures_attachments) }
+
+      it 'returns a link' do
+        url = rails_url.rails_blob_url(user.pictures.first.variant(:thumb).processed)
+
+        expect(url).to be
       end
     end
   end
