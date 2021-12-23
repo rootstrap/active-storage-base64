@@ -13,9 +13,17 @@ In order to get the gem working on your project you just need to add the gem to 
 gem 'active_storage_base64'
 ```
 
+## Compatibility
+Rails Version | ActiveStorageBase64 Version
+--------------|-----------------------------
+7.0.x         | 2.0.x
+6.1.x         | 1.2.x
+6.0.x         | 1.1.x
+5.2.x         | 0.1.x
+
 ## Prerequisites
 
-The only prerequisites for using this gem are having Rails version 6.1 or higher installed on your project and having ActiveStorage properly set up (for more information on how to do this, check [Active Storage Overview](https://edgeguides.rubyonrails.org/active_storage_overview.html))
+The only prerequisite for using this gem is having ActiveStorage properly set up in your project. For more information on how to do this, check [Active Storage Overview](https://edgeguides.rubyonrails.org/active_storage_overview.html).
 
 ## Usage
 
