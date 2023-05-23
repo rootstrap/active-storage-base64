@@ -15,9 +15,11 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.7.0'
 
   # Dependencies
-  s.add_dependency 'rails', '>= 7.0'
+  s.add_dependency 'activestorage', '>= 7.0'
+  s.add_dependency 'activesupport', '>= 7.0'
 
   # Development dependencies
+  s.add_development_dependency 'rails', '>= 7.0'
   s.add_development_dependency 'pry-rails', '~> 0.3.6'
   s.add_development_dependency 'reek', '~> 6.0.6'
   s.add_development_dependency 'rspec-rails', '~> 3.8.0'
