@@ -174,14 +174,14 @@ RSpec.describe 'Attach file' do
       context 'when "user.pictures=" is called' do
         context 'when it is called with only one picture' do
           it 'attaches a picture to the user' do
-            user.pictures = file
+            user.pictures = [file]
             user.save
 
             expect(user.pictures.attached?).to be
           end
 
           it 'assigns the specified filename' do
-            user.pictures = file
+            user.pictures = [file]
             user.save
 
             expect(user.pictures.first.filename.to_s).to eq(filename)
@@ -191,14 +191,14 @@ RSpec.describe 'Attach file' do
         context 'when it is called with more than one picture' do
           context 'when called with an array' do
             it 'attaches an array of pictures to the user' do
-              user.pictures = pictures_attachments
+              user.pictures = [pictures_attachments]
               user.save
 
               expect(user.pictures.count).to eq(2)
             end
 
             it 'assigns the specified filename' do
-              user.pictures = pictures_attachments
+              user.pictures = [pictures_attachments]
               user.save
 
               expect(user.pictures.first.filename).to eq(filename)
@@ -228,13 +228,13 @@ RSpec.describe 'Attach file' do
       context 'when pictures are passed as a hash parameter' do
         context 'when a single picture is passed' do
           it 'attaches a picture' do
-            user = User.create!(pictures: file)
+            user = User.create!(pictures: [file])
 
             expect(user.pictures.attached?).to be
           end
 
           it 'assigns the specified filename' do
-            user = User.create!(pictures: file)
+            user = User.create!(pictures: [file])
 
             expect(user.pictures.first.filename).to eq(filename)
           end
@@ -258,7 +258,7 @@ RSpec.describe 'Attach file' do
 
       context 'when user already has pictures attached' do
         context 'when user has only one picture attached' do
-          let(:user) { User.create!(pictures: file) }
+          let(:user) { User.create!(pictures: [file]) }
 
           context 'when the user wants to remove the picture' do
             it 'removes the picture' do

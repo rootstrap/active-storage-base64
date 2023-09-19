@@ -8,9 +8,9 @@ gemfile(true) do
   git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
   # Activate the gem you are reporting the issue against.
-  gem 'rails', '~> 7.0'
+  gem 'rails', '~> 7.1'
   gem 'sqlite3'
-  gem 'active_storage_base64', '~> 2.0.0'
+  gem 'active_storage_base64', '~> 3.0.0'
 end
 
 require 'active_record/railtie'
