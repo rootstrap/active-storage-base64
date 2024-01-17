@@ -11,6 +11,16 @@ RSpec.describe 'Attach file' do
     }
   end
 
+  let(:empty_filename) { 'empty.txt' }
+  let(:empty_file) do
+    {
+      io: File.open(
+        File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', empty_filename))
+      ),
+      filename: empty_filename
+    }
+  end
+
   let!(:rails_url) { Rails.application.routes.url_helpers }
   let(:user)       { User.create }
 
@@ -305,6 +315,86 @@ RSpec.describe 'Attach file' do
         url = rails_url.rails_blob_url(user.pictures.first.variant(:thumb).processed)
 
         expect(url).to be
+      end
+    end
+  end
+
+  context 'when user uses an empty file' do
+    context 'when user does not have a file attached yet' do
+      it 'does not have an file attached' do
+        expect(user.file.attached?).not_to be
+      end
+
+      context 'when "user.file.attach" is called' do
+        it 'attaches a file to the user' do
+          user.file.attach(empty_file)
+
+          expect(user.file.attached?).to be
+        end
+
+        it 'assigns the specified filename' do
+          user.file.attach(empty_file)
+
+          expect(user.file.filename.to_s).to eq(empty_filename)
+        end
+      end
+
+      context 'when "user.file=" is called' do
+        it 'attaches a file to the user' do
+          user.file = empty_file
+          user.save
+
+          expect(user.file.attached?).to be
+        end
+
+        it 'assigns the specified filename' do
+          user.file = empty_file
+          user.save
+
+          expect(user.file.filename.to_s).to eq(empty_filename)
+        end
+      end
+
+      context 'when the file is sent as a hash parameter to the user' do
+        it 'attaches a file to the user' do
+          user = User.create!(file: empty_file)
+
+          expect(user.file.attached?).to be
+        end
+
+        it 'assigns the specified filename' do
+          user = User.create!(file: empty_file)
+
+          expect(user.file.filename.to_s).to eq(empty_filename)
+        end
+      end
+
+      context 'when a link to the file file is required' do
+        it 'can not generate the URL and raises an error' do
+          expect do
+            rails_url.rails_blob_url(user.file, disposition: 'attachment')
+          end.to raise_error(StandardError)
+        end
+      end
+    end
+
+    context 'when user has a file attached' do
+      let(:user) { User.create!(file: empty_file) }
+
+      context 'when the user wants to remove the file' do
+        it 'removes the file' do
+          user.file.purge
+
+          expect(user.file.attached?).not_to be
+        end
+      end
+
+      context 'when a link to the file is required' do
+        it 'returns a link' do
+          url = rails_url.rails_blob_url(user.file, disposition: 'attachment')
+
+          expect(url).to be
+        end
       end
     end
   end

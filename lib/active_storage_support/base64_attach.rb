@@ -19,7 +19,7 @@ module ActiveStorageSupport
       return unless base64_data.try(:is_a?, String) && base64_data.strip.start_with?('data')
 
       headers, data = base64_data.split(',')
-      decoded_data  = Base64.decode64(data)
+      decoded_data  = Base64.decode64(data || '')
 
       attachment[:io] = StringIO.new(decoded_data)
       attachment[:content_type] ||= content_type(headers)

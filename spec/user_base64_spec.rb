@@ -11,11 +11,18 @@ RSpec.describe 'Attach base64' do
     File.open(File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', second_filename))).read
   end
 
+  let(:empty_filename) { 'empty.txt' }
+  let(:empty_file) do
+    File.open(File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', empty_filename))).read
+  end
+
   let(:base64_data)        { { data: "data:image/jpeg;base64,#{Base64.encode64(file)}" } }
   let(:second_base64_data) { { data: "data:image/png;base64,#{Base64.encode64(second_file)}" } }
+  let(:empty_base64_data) { { data: "data:text/plain;base64,#{Base64.encode64(empty_file)}" } }
 
   let(:data_with_filename)        { base64_data.merge(filename: filename) }
   let(:second_data_with_filename) { second_base64_data.merge(filename: second_filename) }
+  let(:empty_data_with_filename) { second_base64_data.merge(filename: empty_filename) }
 
   let!(:rails_url) { Rails.application.routes.url_helpers }
   let(:user)       { User.create }
@@ -830,6 +837,232 @@ RSpec.describe 'Attach base64' do
         url = rails_url.rails_blob_url(user.pictures.first.variant(:thumb).processed)
 
         expect(url).to be
+      end
+    end
+  end
+
+  context 'when user uses an empty file' do
+    context 'when user does not have a file attached yet' do
+      it 'does not have a file attached' do
+        expect(user.file.attached?).not_to be
+      end
+
+      context 'when "user.file.attach" is called' do
+        context 'when comes in the form of a Hash' do
+          context 'when only data is specified' do
+            it 'attaches a file to the user' do
+              user.file.attach(empty_base64_data)
+
+              expect(user.file.attached?).to be
+            end
+
+            it 'matches the attachment file' do
+              user.file.attach(empty_base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.file.key)).read
+              ).to match(empty_file)
+            end
+          end
+
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user.file.attach(empty_data_with_filename)
+
+              expect(user.file.filename.to_s).to eq(empty_filename)
+            end
+          end
+        end
+
+        context 'when comes in the form of an ActionController::Parameters' do
+          let(:empty_base64_data) do
+            params = ActionController::Parameters.new(
+              data: "data:text/plain;base64,#{Base64.encode64(empty_file)}"
+            )
+            params.permit(:data)
+          end
+
+          context 'when only data is specified' do
+            it 'attaches a file to the user' do
+              user.file.attach(empty_base64_data)
+
+              expect(user.file.attached?).to be
+            end
+
+            it 'matches the attachment file' do
+              user.file.attach(empty_base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.file.key)).read
+              ).to match(empty_file)
+            end
+          end
+
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user.file.attach(empty_data_with_filename)
+
+              expect(user.file.filename.to_s).to eq(empty_filename)
+            end
+          end
+        end
+      end
+
+      context 'when "user.file=" is called' do
+        context 'when it comes in the form of a Hash' do
+          context 'when only data is specified' do
+            it 'attaches a file to the user' do
+              user.file = empty_base64_data
+              user.save
+
+              expect(user.file.attached?).to be
+            end
+
+            it 'attached file matches attachment file' do
+              user.file = empty_base64_data
+              user.save
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.file.key)).read
+              ).to match(empty_file)
+            end
+          end
+
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user.file = empty_data_with_filename
+              user.save
+
+              expect(user.file.filename.to_s).to eq(empty_filename)
+            end
+          end
+        end
+
+        context 'when it comes in the form of an ActionController::Parameters' do
+          let(:empty_base64_data) do
+            params = ActionController::Parameters.new(
+              data: "data:text/plain;base64,#{Base64.encode64(empty_file)}"
+            )
+            params.permit(:data)
+          end
+
+          context 'when only data is specified' do
+            it 'attaches a file to the user' do
+              user.file = empty_base64_data
+              user.save
+
+              expect(user.file.attached?).to be
+            end
+
+            it 'attached file matches attachment file' do
+              user.file = empty_base64_data
+              user.save
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.file.key)).read
+              ).to match(empty_file)
+            end
+          end
+
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user.file = empty_data_with_filename
+              user.save
+
+              expect(user.file.filename.to_s).to eq(empty_filename)
+            end
+          end
+        end
+      end
+
+      context 'when user is created' do
+        context 'when it comes in the form of a Hash' do
+          context 'when only data is specified' do
+            it 'attaches a file to the user' do
+              user = User.create!(username: 'peterparker', file: empty_base64_data)
+
+              expect(user.file.attached?).to be
+            end
+
+            it 'attached file matches attachment file' do
+              user = User.create!(username: 'peterparker', file: empty_base64_data)
+
+              expect(
+                File.open(ActiveStorage::Blob.service.send(:path_for, user.file.key)).read
+              ).to match(empty_file)
+            end
+          end
+
+          context 'when filename is specified along with data' do
+            it 'assigns the specified filename' do
+              user = User.create!(username: 'peterparker', file: empty_data_with_filename)
+
+              expect(user.file.filename).to eq(empty_filename)
+            end
+          end
+        end
+
+        context 'when it comes in the form of ActionController::Parameters' do
+          let(:file_params) { { data: "data:text/plain;base64,#{Base64.encode64(empty_file)}" } }
+          let(:user_params) do
+            params = ActionController::Parameters.new(
+              username: 'peterparker', file: file_params
+            )
+            params.permit(:name, file: file_params.keys)
+          end
+
+          it 'attaches a file to the user' do
+            user = User.create!(user_params)
+
+            expect(user.file.attached?).to be
+          end
+
+          it 'attached file matches attachment file' do
+            user = User.create!(user_params)
+
+            expect(
+              File.open(ActiveStorage::Blob.service.send(:path_for, user.file.key)).read
+            ).to match(empty_file)
+          end
+
+          context 'when filename is specified along with data' do
+            let(:file_params) { empty_data_with_filename }
+
+            it 'assigns the specified filename' do
+              user = User.create!(user_params)
+
+              expect(user.file.filename).to eq(empty_filename)
+            end
+          end
+        end
+      end
+
+      context 'when a link to the file is required' do
+        it 'can not generate the URL and raises an error' do
+          expect do
+            rails_url.rails_blob_url(user.file, disposition: 'attachment')
+          end.to raise_error(StandardError)
+        end
+      end
+    end
+
+    context 'when user already has a file attached' do
+      let(:user) { User.create!(file: empty_base64_data) }
+
+      context 'when the user wants to remove the file' do
+        it 'removes the file' do
+          user.file.purge
+
+          expect(user.file.attached?).not_to be
+        end
+      end
+
+      context 'when a link to the file file is required' do
+        it 'returns a link' do
+          url = rails_url.rails_blob_url(user.file, disposition: 'attachment')
+
+          expect(url).to be
+        end
       end
     end
   end
