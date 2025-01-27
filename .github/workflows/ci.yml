@@ -10,13 +10,26 @@ jobs:
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        gemfile: [rails_7_1.gemfile, rails_head.gemfile]
-        ruby_version: ['2.7', '3.0', '3.1', '3.2']
+        gemfile: [rails_7_1.gemfile, rails_7_2.gemfile, rails_8_0.gemfile, rails_head.gemfile]
+        ruby_version: ['2.7', '3.0', '3.1', '3.2', '3.3', '3.4']
         exclude:
           - gemfile: rails_head.gemfile
             ruby_version: '2.7'
           - gemfile: rails_head.gemfile
+            ruby_version: '3.0'
+          - gemfile: rails_head.gemfile
+            ruby_version: '3.1'
+          - gemfile: rails_8_0.gemfile
+            ruby_version: '2.7'
+          - gemfile: rails_8_0.gemfile
+            ruby_version: '3.0'
+          - gemfile: rails_8_0.gemfile
+            ruby_version: '3.1'
+          - gemfile: rails_7_2.gemfile
+            ruby_version: '2.7'
+          - gemfile: rails_7_2.gemfile
             ruby_version: '3.0'
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}
@@ -29,6 +42,7 @@ jobs:
         ruby-version: ${{ matrix.ruby_version }}
     - name: Before build
       run: |
+        sudo apt-get install imagemagick
         sudo apt-get install libsqlite3-dev
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         chmod +x ./cc-test-reporter
