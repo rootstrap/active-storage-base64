@@ -16,6 +16,9 @@ gem 'active_storage_base64'
 ## Compatibility
 Rails Version | ActiveStorageBase64 Version
 --------------|-----------------------------
+8.1.x         | 3.0.x
+8.0.x         | 3.0.x
+7.2.x         | 3.0.x
 7.1.x         | 3.0.x
 7.0.x         | 2.0.x
 6.1.x         | 1.2.x
