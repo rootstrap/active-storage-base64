@@ -42,6 +42,7 @@ jobs:
         ruby-version: ${{ matrix.ruby_version }}
     - name: Before build
       run: |
+        sudo apt-get install imagemagick
         sudo apt-get install libsqlite3-dev
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         chmod +x ./cc-test-reporter
