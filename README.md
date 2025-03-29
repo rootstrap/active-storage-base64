@@ -181,6 +181,16 @@ For example:
 data:image/png;base64,[base64 data]
 ```
 
+### Avoid bloating logs
+
+Because we use strings to pass data in params, if you are not careful, these long strings will show up in your production logs, causing a lot of bloat. To avoid this, filter your base64 params:
+```diff
+# config/initializers/filter_parameter_logging.rb
+
+- Rails.application.config.filter_parameters += [:password]
++ Rails.application.config.filter_parameters += [:password, :avatar, :pictures, :file]
+```
+
 ## Contributing
 
 Please read our [CONTRIBUTING](https://github.com/rootstrap/active-storage-base64/blob/master/CONTRIBUTING.md) and our [CODE_OF_CONDUCT](https://github.com/rootstrap/active-storage-base64/blob/master/CODE_OF_CONDUCT.md) files for details on our code of conduct, and the process for submitting pull requests to us.
