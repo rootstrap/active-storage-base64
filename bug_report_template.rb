@@ -10,7 +10,7 @@ gemfile(true) do
   # Activate the gem you are reporting the issue against.
   gem 'rails', '~> 7.1'
   gem 'sqlite3'
-  gem 'active_storage_base64', '~> 3.0.0'
+  gem 'active_storage_base64', github: 'rootstrap/active-storage-base64', branch: 'master'
 end
 
 require 'active_record/railtie'
